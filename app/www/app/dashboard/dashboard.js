@@ -16,6 +16,21 @@ angular.module('hydra.dashboard', [
 
     .controller('DashboardCtrl', function() {
         var dashboardCtrl = this;
+
+        dashboardCtrl.isConnected = true;
+
+        dashboardCtrl.connectivityMessage = "Connected";
+
+        dashboardCtrl.toggleConnectivity = function() {
+            if (dashboardCtrl.isConnected) {
+                dashboardCtrl.isConnected = false;
+                dashboardCtrl.connectivityMessage = "Disconnected";
+            } else {
+                dashboardCtrl.isConnected = true;
+                dashboardCtrl.connectivityMessage = "Connected";
+            }
+        };
+
         dashboardCtrl.playlists = [
             { title: 'Test', id: 1 },
             { title: 'Chill', id: 2 },
