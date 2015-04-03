@@ -1,0 +1,13 @@
+# OS Garbage
+.DS_Store
+Thumbs.db
+
+# IntelliJ IDEA?
+.idea/
+
+# Bower lib dependencies
+/**/lib/*
+
+# Ionic dependencies
+/**/resources/android
+/**/resources/ios
