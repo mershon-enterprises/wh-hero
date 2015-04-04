@@ -6,7 +6,7 @@
         <div ng-class="{'message-connected':dashboardCtrl.isConnected,
                         'message-disconnected':!dashboardCtrl.isConnected}">
             {{dashboardCtrl.connectivityMessage}}</div>
-        <div class="dashboard-buttons">
+        <div ng-if="dashboardCtrl.isConnected">
             <button class="button button-block button-clear">
                 View Transmitters
             </button>
@@ -15,4 +15,9 @@
             </button>
         </div>
     </ion-content>
+    <div class="bar bar-footer bar-stable">
+        <span class="dashboard-footer">
+            Last Updated: {{dashboardCtrl.lastUpdated | date:'HH:mm:ss a'}}
+        </span>
+    </div>
 </ion-view>

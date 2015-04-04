@@ -36,6 +36,7 @@
     height: 236px;
     width: 236px;
     margin: 20px auto 10px;
+    background-size: 100% 100%;
 }
 
 .icon-connected {
@@ -65,12 +66,8 @@
     border-color: #d6d6d6;
 }
 
-.dashboard-buttons {
-    margin-top: 20px;
-}
-
-.dashboard-buttons button{
-    width: 80%;
-    margin: 0 auto;
+.dashboard-footer {
+    color: #888;
+    margin: auto;
 }
 
