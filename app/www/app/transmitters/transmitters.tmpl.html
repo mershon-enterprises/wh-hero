@@ -1,5 +1,17 @@
 <ion-view view-title="Transmitters">
     <ion-content>
-        <h1>Transmitters</h1>
+        <div class="list">
+
+            <a class="item item-icon-left item-icon-right" href="#"
+               ng-repeat="transmitter in transmittersCtrl.transmitters"
+                    ui-sref="hydra.transmitter({transmitterId:transmitter.id})">
+                <i class="icon ion-wifi" ng-class="{'icon-connected': transmitter.connected,
+                                                    'icon-disconnected': !transmitter.connected}"></i>
+                <h2>{{transmitter.name}}</h2>
+                <p>{{transmitter.mac}}</p>
+                <i class="icon ion-stats-bars"></i>
+            </a>
+
+        </div>
     </ion-content>
 </ion-view>
