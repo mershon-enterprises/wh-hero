@@ -30,7 +30,7 @@ angular.module('hydra', [
     .state('hydra', {
         url: "",
         abstract: true,
-        templateUrl: "app/common/menu.tmpl.html",
+        templateUrl: "app/menu/menu.tmpl.html",
         controller: 'MenuCtrl as menuCtrl'
     });
 

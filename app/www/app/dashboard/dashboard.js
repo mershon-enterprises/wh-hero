@@ -16,13 +16,21 @@ angular.module('hydra.dashboard', [
 
     .controller('DashboardCtrl', function() {
         var dashboardCtrl = this;
-        dashboardCtrl.playlists = [
-            { title: 'Test', id: 1 },
-            { title: 'Chill', id: 2 },
-            { title: 'Dubstep', id: 3 },
-            { title: 'Indie', id: 4 },
-            { title: 'Rap', id: 5 },
-            { title: 'Cowbell', id: 6 }
-        ];
+
+        dashboardCtrl.lastUpdated = new Date();
+        dashboardCtrl.isConnected = true;
+
+        dashboardCtrl.connectivityMessage = "Connected";
+
+        dashboardCtrl.toggleConnectivity = function() {
+            if (dashboardCtrl.isConnected) {
+                dashboardCtrl.isConnected = false;
+                dashboardCtrl.connectivityMessage = "Disconnected";
+            } else {
+                dashboardCtrl.isConnected = true;
+                dashboardCtrl.connectivityMessage = "Connected";
+                dashboardCtrl.lastUpdated = new Date();
+            }
+        };
     })
 ;
