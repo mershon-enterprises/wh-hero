@@ -32,18 +32,18 @@
     background: none; }
 
 /* Dashboard */
-.icon-connected, .icon-disconnected {
+.status-icon-connected, .status-icon-disconnected {
     height: 236px;
     width: 236px;
     margin: 20px auto 10px;
     background-size: 100% 100%;
 }
 
-.icon-connected {
+.status-icon-connected {
     background: url('../img/connected.png') no-repeat;
 }
 
-.icon-disconnected {
+.status-icon-disconnected {
     background: url('../img/disconnected.png') no-repeat;
 }
 
