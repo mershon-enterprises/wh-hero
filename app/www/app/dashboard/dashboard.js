@@ -11,7 +11,7 @@ angular.module('hydra.dashboard', [
                         controller: 'DashboardCtrl as dashboardCtrl'
                     }
                 }
-            })
+            });
     })
 
     .controller('DashboardCtrl', function() {

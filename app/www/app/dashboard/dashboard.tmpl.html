@@ -1,4 +1,4 @@
-<ion-view view-title="Dashboard">
+<ion-view view-title="">
     <ion-content>
         <div ng-click="dashboardCtrl.toggleConnectivity()"
              ng-class="{'icon-connected':dashboardCtrl.isConnected,
@@ -7,10 +7,10 @@
                         'message-disconnected':!dashboardCtrl.isConnected}">
             {{dashboardCtrl.connectivityMessage}}</div>
         <div ng-if="dashboardCtrl.isConnected">
-            <button class="button button-block button-clear">
+            <button class="button button-block button-clear" ui-sref="hydra.transmitters">
                 View Transmitters
             </button>
-            <button class="button button-block button-clear">
+            <button class="button button-block button-clear" ui-sref="hydra.mesh">
                 View Mesh
             </button>
         </div>
