@@ -1,16 +1,16 @@
-<ion-view view-title="Dashboard">
+<ion-view view-title="">
     <ion-content>
         <div ng-click="dashboardCtrl.toggleConnectivity()"
-             ng-class="{'icon-connected':dashboardCtrl.isConnected,
-                        'icon-disconnected':!dashboardCtrl.isConnected}"></div>
+             ng-class="{'status-icon-connected':dashboardCtrl.isConnected,
+                        'status-icon-disconnected':!dashboardCtrl.isConnected}"></div>
         <div ng-class="{'message-connected':dashboardCtrl.isConnected,
                         'message-disconnected':!dashboardCtrl.isConnected}">
             {{dashboardCtrl.connectivityMessage}}</div>
         <div ng-if="dashboardCtrl.isConnected">
-            <button class="button button-block button-clear">
+            <button class="button button-block button-clear" ui-sref="hydra.transmitters">
                 View Transmitters
             </button>
-            <button class="button button-block button-clear">
+            <button class="button button-block button-clear" ui-sref="hydra.mesh">
                 View Mesh
             </button>
         </div>

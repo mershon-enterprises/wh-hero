@@ -5,9 +5,12 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 angular.module('hydra', [
-  'ionic',
-  'hydra.menu',
-  'hydra.dashboard'
+    'ionic',
+    'hydra.menu',
+    'hydra.dashboard',
+    'hydra.mesh',
+    'hydra.transmitters',
+    'hydra.transmitters.transmitter'
 ])
 
 .run(function($ionicPlatform) {

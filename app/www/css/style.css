@@ -32,18 +32,18 @@
     background: none; }
 
 /* Dashboard */
-.icon-connected, .icon-disconnected {
+.status-icon-connected, .status-icon-disconnected {
     height: 236px;
     width: 236px;
     margin: 20px auto 10px;
     background-size: 100% 100%;
 }
 
-.icon-connected {
+.status-icon-connected {
     background: url('../img/connected.png') no-repeat;
 }
 
-.icon-disconnected {
+.status-icon-disconnected {
     background: url('../img/disconnected.png') no-repeat;
 }
 
@@ -56,13 +56,19 @@
     font-size: 17px;
     width: 150px;
 }
-.message-connected {
+.message-connected, .icon-connected {
     color: #72b284;
+}
+
+.message-connected {
     border-color: #72b284;
 }
 
-.message-disconnected {
+.message-disconnected, .icon-disconnected {
     color: #d6d6d6;
+}
+
+.message-disconnected {
     border-color: #d6d6d6;
 }
 
