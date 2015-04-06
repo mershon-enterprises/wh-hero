@@ -11,3 +11,10 @@ Thumbs.db
 # Ionic dependencies
 /**/resources/android
 /**/resources/ios
+
+# Vim swapfiles
+*.swp
+*.swo
+
+# Ctags tags
+.tags
