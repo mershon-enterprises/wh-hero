@@ -24,6 +24,14 @@ angular.module('hydra', [
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
         }
+
+        var success = function(message) {
+            alert(message);
+        }
+        var failure = function() {
+            alert("Error calling Hello Plugin");
+        }
+        window.hello.greet("World", success, failure);
     });
 })
 
