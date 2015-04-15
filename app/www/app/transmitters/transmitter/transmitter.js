@@ -32,4 +32,12 @@ angular.module('hydra.transmitters.transmitter', [])
         transmitterCtrl.isConnected = true;
         transmitterCtrl.transmitterId = $stateParams.transmitterId;
 
+        /**
+         * Note: Once the views are done, create a transmitterService.
+         *       It should be stubbed out with static data, but it should still
+         *       use local-storage to store the transmitter data.
+         *       Use the transmitterId passed as a state param to fetch the
+         *       transmitter from the service.
+         */
+
     });
