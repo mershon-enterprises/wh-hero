@@ -1,5 +1,26 @@
-<ion-view view-title="Transmitter Detail">
+<ion-view view-title="{{transmitterCtrl.transmitter.name}}">
     <ion-content>
-        <h1>Transmitter Detail for ID: {{transmitterCtrl.transmitterId}}</h1>
+        <div ng-class="{'transmitter-icon-connected':!transmitterCtrl.isConnected,
+                        'transmitter-icon-disconnected':transmitterCtrl.isConnected}"></div>
+        <div class="table table-250">
+
+            <div class="table-row">
+                <div class="table-cell-125">PV</div>
+                <div class="table-cell-125">{{transmitterCtrl.transmitter.pv}}</div>
+            </div>
+            <div class="table-row">
+                <div class="table-cell-125">PS</div>
+                <div class="table-cell-125">{{transmitterCtrl.transmitter.sv}}</div>
+            </div>
+            <div class="table-row">
+                <div class="table-cell-125">TV</div>
+                <div class="table-cell-125">{{transmitterCtrl.transmitter.tv}}</div>
+            </div>
+            <div class="table-row">
+                <div class="table-cell-125">QV</div>
+                <div class="table-cell-125">{{transmitterCtrl.transmitter.qv}}</div>
+            </div>
+
+        </div>
     </ion-content>
 </ion-view>
