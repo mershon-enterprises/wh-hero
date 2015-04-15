@@ -28,13 +28,12 @@ angular.module('hydra', [
             StatusBar.styleDefault();
         }
 
-        var success = function(message) {
-            alert(message);
+        if (!window.plugins.CordovaHttpPlugin) {
+            alert('No object window.plugins.CordovaHttpPlugin!');
+        } else {
+            window.cordovaHTTP = window.plugins.CordovaHttpPlugin;
+            window.hello.init();
         }
-        var failure = function() {
-            alert("Error calling Hello Plugin");
-        }
-        window.hello.greet("World", success, failure);
     });
 })
 
