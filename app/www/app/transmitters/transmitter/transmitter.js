@@ -20,5 +20,16 @@ angular.module('hydra.transmitters.transmitter', [])
             $state.go('hydra.transmitters')
         }
 
+        var id = $stateParams.transmitterId;
+        transmitterCtrl.transmitter = {
+            name: 'Transmitter ' + id,
+            pv: 1.23,
+            sv: 4.56,
+            tv: 7.89,
+            qv: 10.11
+        }
+
+        transmitterCtrl.isConnected = true;
         transmitterCtrl.transmitterId = $stateParams.transmitterId;
+
     });

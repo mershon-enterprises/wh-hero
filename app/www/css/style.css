@@ -77,3 +77,52 @@
     margin: auto;
 }
 
+/* Transmitter Detail */
+
+.transmitter-icon-connected, .transmitter-icon-disconnected {
+    height: 175px;
+    width: 175px;
+    margin: 20px auto 10px;
+    background-size: 100% 100%;
+}
+
+.transmitter-icon-connected {
+    background: url('../img/transmitter-green.png') no-repeat;
+}
+
+.transmitter-icon-disconnected {
+    background: url('../img/transmitter-gray.png') no-repeat;
+}
+
+/* Table */
+
+.table {
+    diaplay: table;
+    border-collapse: collapse;
+    margin: 10px auto;
+}
+
+.table-250 {
+    width: 250px;
+}
+
+.table-row {
+    diaplay: table-row;
+}
+
+.table-cell-125 {
+    width: 125px;
+    color: #bbb;
+    padding: 10px;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #bbb;
+    border-bottom-width: 0;
+    overflow: hidden;
+}
+
+.table-row:last-of-type .table-cell-125 {
+    border-bottom-width: 1px;
+}
+
