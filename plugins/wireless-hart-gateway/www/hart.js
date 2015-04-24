@@ -30,17 +30,17 @@ module.exports = {
       (messageLength & 0xFF)       // message length lower byte
     ].concat(hartCommand);
   },
-  fromHartMessage: function(data) {
-    console.log('fromHartMessage: data: ' + JSON.stringify(data));
-    console.log('fromHartMessage: data.length: ' + data.length);
+  fromHartMessage: function(binaryPacket) {
     return {
-      messageVersion:  data[0],
-      messageType:     data[1],
-      messageId:       data[2],
-      messageStatus:   data[3],
-      transactionId:   (data[4] << 8) + data[5],
-      messageLength:   (data[6] << 8) + data[7],
-      messageContents: data.slice(8)
+      messageVersion:  binaryPacket[0],
+      messageType:     binaryPacket[1],
+      messageId:       binaryPacket[2],
+      messageStatus:   binaryPacket[3],
+      transactionId:   (0xFF & binaryPacket[4]) << 8 |
+                        (0xFF & binaryPacket[5]),
+      messageLength:   (0xFF & binaryPacket[6]) << 8 |
+                        (0xFF & (binaryPacket[7])),
+      messageContents: new Uint8Array(binaryPacket.buffer.slice(8))
     };
   },
 
@@ -57,16 +57,22 @@ module.exports = {
     document.addEventListener(
       window.tlantic.plugins.socket.receiveHookName,
       function (ev) {
-        console.log('RESPONSE RECEIVED');
-        console.log(JSON.stringify(ev.metadata.data));
-
         // if we have data and there's a queued callback, fire it
         if (ev.metadata &&
             ev.metadata.data.length > 0 &&
             self.listeningQueue.length > 0) {
 
+          // convert character buffer to bytes
+          var charBuffer = atob(ev.metadata.data);
+          var length = charBuffer.length;
+          var buffer = new Uint8Array(new ArrayBuffer(length));
+          for (var i = 0; i < length; i++) {
+            buffer[i] = charBuffer.charCodeAt(i);
+          }
+
+          // pass the buffer to the callable
           var callable = self.listeningQueue.pop();
-          callable(ev.metadata.data);
+          callable(buffer);
         }
       }
     );
@@ -107,12 +113,10 @@ module.exports = {
 
     var deferred = window.$q.defer();
     window.tlantic.plugins.socket.sendBinary(
-      function() {
-
+      function(response) {
         self.listeningQueue.push(
           function(response) {
             var message = self.fromHartMessage(response);
-            console.log(JSON.stringify(message));
             var contents = message.messageContents;
 
             // return session timeout value
