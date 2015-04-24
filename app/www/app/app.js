@@ -13,7 +13,7 @@ angular.module('hydra', [
     'hydra.transmitters.transmitter'
 ])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $q) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -28,12 +28,30 @@ angular.module('hydra', [
             StatusBar.styleDefault();
         }
 
-        if (!window.plugins.CordovaHttpPlugin) {
-            alert('No object window.plugins.CordovaHttpPlugin!');
-        } else {
-            window.cordovaHTTP = window.plugins.CordovaHttpPlugin;
-            window.hello.init();
+        if (!window.tlantic.plugins.socket) {
+            alert('No object window.tlantic.plugins.socket!');
         }
+
+        // Make 'q' module available to Cordova plugins
+        window.$q = $q;
+        window.hart.connect(
+          '192.168.1.12', 5094
+        ).then(
+          function() {
+            return window.hart.login();
+          },
+          function(message) {
+            alert('Failed to connect to Gateway!');
+          }
+        ).then(
+          function(loginResponse) {
+            alert(loginResponse['sessionTimeout']);
+          },
+          function(message) {
+            alert('Failed to login to Gateway!');
+          }
+        );
+
     });
 })
 

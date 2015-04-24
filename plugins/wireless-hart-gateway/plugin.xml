@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-        id="com.example.hello"
+        id="mershon.enterprises.wirelesshart"
         version="0.7.0">
 
   <name>Hello</name>
@@ -9,10 +9,13 @@
     <engine name="cordova" version=">=3.4.0"/>
   </engines>
 
-  <asset src="www/hello.js" target="js/hello.js"/>
+  <dependency id="com.tlantic.plugins.socket"
+      url="https://github.com/mershon-enterprises/cdv-socket-plugin" commit="9866d9406e5aa12ac25a08f4ed18a869419f6102" />
 
-  <js-module src="www/hello.js" name="hello">
-    <clobbers target="hello" />
+  <asset src="www/hart.js" target="js/hart.js"/>
+
+  <js-module src="www/hart.js" name="hart">
+    <clobbers target="hart" />
   </js-module>
 
 </plugin>
