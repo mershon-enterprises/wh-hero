@@ -36,10 +36,8 @@ module.exports = {
       messageType:     binaryPacket[1],
       messageId:       binaryPacket[2],
       messageStatus:   binaryPacket[3],
-      transactionId:   (0xFF & binaryPacket[4]) << 8 |
-                        (0xFF & binaryPacket[5]),
-      messageLength:   (0xFF & binaryPacket[6]) << 8 |
-                        (0xFF & (binaryPacket[7])),
+      transactionId:   binaryPacket[4] << 8 | binaryPacket[5],
+      messageLength:   binaryPacket[6] << 8 | binaryPacket[7],
       messageContents: new Uint8Array(binaryPacket.buffer.slice(8))
     };
   },
