@@ -12,13 +12,13 @@ angular.module('ng-d3', [])
 
                 var color = d3.scale.category20();
 
-                var svg = d3.select(elem).append("svg")
+                var svg = d3.select(elem[0]).append("svg")
                     .attr("width", scope.options.width)
                     .attr("height", scope.options.height);
 
                 var force = d3.layout.force()
-                    .charge(scope.options.charge)
-                    .linkDistance(scope.options.linkDistance)
+                    .charge(-50)
+                    .linkDistance(50)
                     .size([scope.options.width, scope.options.height])
                     .nodes(scope.data.nodes)
                     .links(scope.data.links)
