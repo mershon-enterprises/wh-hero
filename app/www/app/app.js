@@ -45,10 +45,17 @@ angular.module('hydra', [
           }
         ).then(
           function(loginResponse) {
-            alert(loginResponse['sessionTimeout']);
+            return window.hart.getGateway();
           },
           function(message) {
             alert('Failed to login to Gateway!');
+          }
+        ).then(
+          function(gateway) {
+            alert(gateway['deviceId']);
+          },
+          function(message) {
+            alert('Failed to call getGateway');
           }
         );
 
