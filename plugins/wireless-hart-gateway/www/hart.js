@@ -41,6 +41,16 @@ module.exports = {
       messageContents: new Uint8Array(binaryPacket.buffer.slice(8))
     };
   },
+  hartChecksum: function(bytes) {
+    return _.reduce(bytes, function(checksum, n) {
+      return checksum ^= n;
+    }, 0);
+  },
+  withChecksum: function(bytes) {
+    var self = this;
+    var sliced = bytes.slice(0, bytes.length - 1);
+    return sliced.concat([self.hartChecksum(sliced)]);
+  },
 
 
   /* Socket stuff */
@@ -144,5 +154,64 @@ module.exports = {
       )
     );
     return deferred.promise;
+  },
+
+  getGateway: function() {
+    var self = this;
+
+    var deferred = window.$q.defer();
+    window.tlantic.plugins.socket.sendBinary(
+      function(response) {
+        self.listeningQueue.push(
+          function(response) {
+            var message = self.fromHartMessage(response);
+            var contents = message.messageContents;
+
+            // return gateway information
+            var gateway = {
+              frameSize:        contents[ 0] << 8 |
+                                contents[ 1],
+              command:          contents[ 2],
+              byteCount:        contents[ 3],
+              responseCode:     contents[ 4],
+              status:           contents[ 5],
+              expansionCode:    contents[ 6],
+              deviceType:       contents[ 7] << 8 |
+                                contents[ 8],
+              preambles:        contents[ 9],
+              hartVersion:      contents[10],
+              deviceRevision:   contents[11],
+              softwareRevision: contents[12],
+              signaling:        contents[13],
+              flags:            contents[14],
+              deviceId:         contents[15] << 16 |
+                                contents[16] <<  8 |
+                                contents[17]
+            };
+            console.log(JSON.stringify(gateway));
+            deferred.resolve(gateway);
+          }
+        );
+      },
+      function(message) {
+        deferred.reject(message);
+      },
+      self.connectionId,
+      self.toHartMessage(
+        self.MESSAGE_IDS['hart-wired-pdu'],
+        2,
+        self.withChecksum(
+          [
+            0x02, // small frame
+            0x80, // device type is 128
+            0x00, // command 0 = UID
+            0x00, // byte count is 0
+            0x00  // checksum default to 0
+          ]
+        )
+      )
+    );
+    return deferred.promise;
   }
+
 };
