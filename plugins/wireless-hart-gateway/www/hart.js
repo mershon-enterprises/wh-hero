@@ -212,6 +212,64 @@ module.exports = {
       )
     );
     return deferred.promise;
+  },
+
+  getGatewayDeviceCount: function(gateway) {
+    var self = this;
+
+    var deferred = window.$q.defer();
+    window.tlantic.plugins.socket.sendBinary(
+      function(response) {
+        self.listeningQueue.push(
+          function(response) {
+            var message = self.fromHartMessage(response);
+            var contents = message.messageContents;
+
+            // return gateway information
+            var hartMessage = {
+              frameSize:        contents[ 0],
+              deviceType:       contents[ 1] << 8 |
+                                contents[ 2],
+              deviceId:         contents[ 3] << 16 |
+                                contents[ 4] <<  8 |
+                                contents[ 5],
+              command:          contents[ 6],
+              byteCount:        contents[ 7],
+              responseCode:     contents[ 8],
+              status:           contents[ 9],
+              deviceCount:      contents[13] << 8 |
+                                contents[14]
+            };
+            console.log(JSON.stringify(hartMessage));
+            // subtract 1 from device count since the gateway counts itself
+            deferred.resolve(hartMessage.deviceCount - 1);
+          }
+        );
+      },
+      function(message) {
+        deferred.reject(message);
+      },
+      self.connectionId,
+      self.toHartMessage(
+        self.MESSAGE_IDS['hart-wired-pdu'],
+        3,                                  // transaction id
+        self.withChecksum(
+          [
+            0x82,                           // large frame
+            gateway.deviceType >> 8 & 0xFF, // device type
+            gateway.deviceType      & 0xFF,
+            gateway.deviceId >> 16 & 0xFF,  // device id
+            gateway.deviceId >>  8 & 0xFF,
+            gateway.deviceId       & 0xFF,
+            74,                             // command 74 =
+                                            //   CMD_READ_IO_SYSTEM_CAPABILITIES
+            0x00,                           // byte count is 0
+            0x00                            // checksum default to 0
+          ]
+        )
+      )
+    );
+    return deferred.promise;
   }
 
 };

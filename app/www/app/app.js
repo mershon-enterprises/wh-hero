@@ -34,6 +34,7 @@ angular.module('hydra', [
 
         // Make 'q' module available to Cordova plugins
         window.$q = $q;
+        window.gateway = null;
         window.hart.connect(
           '192.168.1.12', 5094
         ).then(
@@ -52,10 +53,18 @@ angular.module('hydra', [
           }
         ).then(
           function(gateway) {
-            alert(gateway['deviceId']);
+            window.gateway = gateway;
+            return window.hart.getGatewayDeviceCount(window.gateway);
           },
           function(message) {
             alert('Failed to call getGateway');
+          }
+        ).then(
+          function(deviceCount) {
+            alert(deviceCount + ' transmitters in Gateway');
+          },
+          function(message) {
+            alert('Failed to call getDGatewayDeviceCount');
           }
         );
 
