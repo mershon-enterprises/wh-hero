@@ -62,9 +62,17 @@ angular.module('hydra', [
         ).then(
           function(deviceCount) {
             alert(deviceCount + ' transmitters in Gateway');
+            return window.hart.getTransmitter(window.gateway, 1);
           },
           function(message) {
             alert('Failed to call getDGatewayDeviceCount');
+          }
+        ).then(
+          function(transmitter) {
+            alert(JSON.stringify(transmitter));
+          },
+          function(message) {
+            alert('Failed to get transmitter 1');
           }
         );
 

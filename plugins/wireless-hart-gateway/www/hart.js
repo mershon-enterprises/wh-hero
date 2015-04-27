@@ -225,7 +225,7 @@ module.exports = {
             var message = self.fromHartMessage(response);
             var contents = message.messageContents;
 
-            // return gateway information
+            // return transmitter count
             var hartMessage = {
               frameSize:        contents[ 0],
               deviceType:       contents[ 1] << 8 |
@@ -264,6 +264,90 @@ module.exports = {
             74,                             // command 74 =
                                             //   CMD_READ_IO_SYSTEM_CAPABILITIES
             0x00,                           // byte count is 0
+            0x00                            // checksum default to 0
+          ]
+        )
+      )
+    );
+    return deferred.promise;
+  },
+
+  getTransmitter: function(gateway, deviceIndex) {
+    var self = this;
+
+    var deferred = window.$q.defer();
+    window.tlantic.plugins.socket.sendBinary(
+      function(response) {
+        self.listeningQueue.push(
+          function(response) {
+            var message = self.fromHartMessage(response);
+            var contents = message.messageContents;
+
+            // return transmitter information
+            var hartMessage = {
+              frameSize:        contents[ 0],
+              deviceType:       contents[ 1] << 8 |
+                                contents[ 2],
+              deviceId:         contents[ 3] << 16 |
+                                contents[ 4] <<  8 |
+                                contents[ 5],
+              command:          contents[ 6],
+              byteCount:        contents[ 7],
+              responseCode:     contents[ 8],
+              status:           contents[ 9],
+              deviceIndex:      contents[10] << 8 |
+                                contents[11],
+              ioCard:           contents[12],
+              channel:          contents[13],
+              mfgId:            contents[14] << 8 |
+                                contents[15],
+              subDeviceType:    contents[16] << 8 |
+                                contents[17],
+              subDeviceId:      contents[18] << 16 |
+                                contents[19] <<  8 |
+                                contents[20],
+              univCmdRevision:  contents[21],
+              deviceTag:        new Uint8Array(contents.buffer.slice(22, 54)),
+              checksum:         contents[53]
+            };
+            console.log(JSON.stringify(hartMessage));
+            deferred.resolve({
+              deviceType: hartMessage.subDeviceType,
+              deviceId:   hartMessage.subDeviceId,
+              macAddress: ('00-1B-1E-' +
+                           ('00' + contents[16].toString(16)).substr(-2) + '-' +
+                           ('00' + contents[17].toString(16)).substr(-2) + '-' +
+                           ('00' + contents[18].toString(16)).substr(-2) + '-' +
+                           ('00' + contents[19].toString(16)).substr(-2) + '-' +
+                           ('00' + contents[20].toString(16)).substr(-2)),
+              name:       String.fromCharCode.
+                                 apply(null, hartMessage.deviceTag).
+                                 split("\0").        // split on null-terminator
+                                 shift()             // and grab the head
+            });
+          }
+        );
+      },
+      function(message) {
+        deferred.reject(message);
+      },
+      self.connectionId,
+      self.toHartMessage(
+        self.MESSAGE_IDS['hart-wired-pdu'],
+        4,                                  // transaction id
+        self.withChecksum(
+          [
+            0x82,                           // large frame
+            gateway.deviceType >> 8 & 0xFF, // device type
+            gateway.deviceType      & 0xFF,
+            gateway.deviceId >> 16 & 0xFF,  // device id
+            gateway.deviceId >>  8 & 0xFF,
+            gateway.deviceId       & 0xFF,
+            84,                             // command 84 =
+                                            //      CMD_READ_SUB_DEVICE_IDENTITY
+            0x02,                           // byte count is 0
+            deviceIndex >> 8 & 0xFF,        // device index
+            deviceIndex      & 0xFF,
             0x00                            // checksum default to 0
           ]
         )
