@@ -112,12 +112,12 @@
 
 .table-cell-125 {
     width: 125px;
-    color: #bbb;
+    color: #555;
     padding: 10px;
     display: table-cell;
     text-align: center;
     vertical-align: middle;
-    border: 1px solid #bbb;
+    border: 1px solid #999;
     border-bottom-width: 0;
     overflow: hidden;
 }
@@ -126,3 +126,7 @@
     border-bottom-width: 1px;
 }
 
+.clickable:hover {
+    cursor: pointer;
+    background-color: #e1e1e1;
+}
