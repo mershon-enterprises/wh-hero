@@ -147,9 +147,9 @@ module.exports = {
       self.connectionId,
       self.toHartMessage(
         self.MESSAGE_IDS['session-initiate'],
-        1,
-        [ 0x01, /* primary/master session */
-          0x00, 0x00, 0xEA, 0x60 /* 60000 ms timeout */
+        2,                       // transaction id
+        [ 0x01,                  // primary/master session
+          0x00, 0x00, 0xEA, 0x60 // 60000 ms timeout
         ]
       )
     );
@@ -199,12 +199,12 @@ module.exports = {
       self.connectionId,
       self.toHartMessage(
         self.MESSAGE_IDS['hart-wired-pdu'],
-        2,
+        2,        // transaction id
         self.withChecksum(
           [
             0x02, // small frame
             0x80, // device type is 128
-            0x00, // command 0 = UID
+            0,    // command 0 = UID
             0x00, // byte count is 0
             0x00  // checksum default to 0
           ]
