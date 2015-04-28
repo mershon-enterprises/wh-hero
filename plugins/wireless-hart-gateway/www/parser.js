@@ -125,10 +125,17 @@ module.exports = {
 
   enablePolling: function() {
     this.pollingEnabled = true;
+    console.log('Polling enabled');
     this.poll(1);
   },
 
   disablePolling: function() {
     this.pollingEnabled = false;
+    console.log('Polling disabled');
+  },
+
+  getTransmitterList: function() {
+    return this.transmitters.slice(1); // drop the 0th item since it is always
+                                       // undefined
   },
 };
