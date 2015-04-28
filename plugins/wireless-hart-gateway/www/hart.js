@@ -328,7 +328,8 @@ module.exports = {
                            ('00' + contents[17].toString(16)).substr(-2) + '-' +
                            ('00' + contents[18].toString(16)).substr(-2) + '-' +
                            ('00' + contents[19].toString(16)).substr(-2) + '-' +
-                           ('00' + contents[20].toString(16)).substr(-2)),
+                           ('00' + contents[20].toString(16)).substr(-2)).
+                          toUpperCase(),
               name:       String.fromCharCode.
                                  apply(null, hartMessage.deviceTag).
                                  split("\0").        // split on null-terminator
