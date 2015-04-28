@@ -51,6 +51,15 @@ module.exports = {
     var sliced = bytes.slice(0, bytes.length - 1);
     return sliced.concat([self.hartChecksum(sliced)]);
   },
+  toFloat: function(arrayBuffer) {
+    var bigEndian = new Uint8Array(arrayBuffer);
+    var littleEndian = new Uint8Array(new ArrayBuffer(4));
+    littleEndian[0] = bigEndian[3];
+    littleEndian[1] = bigEndian[2];
+    littleEndian[2] = bigEndian[1];
+    littleEndian[3] = bigEndian[0];
+    return new Float32Array(littleEndian.buffer)[0];
+  },
 
 
   /* Socket stuff */
@@ -205,7 +214,7 @@ module.exports = {
             0x02, // small frame
             0x80, // device type is 128
             0,    // command 0 = UID
-            0x00, // byte count is 0
+            0x00, // byte count
             0x00  // checksum default to 0
           ]
         )
@@ -263,7 +272,7 @@ module.exports = {
             gateway.deviceId       & 0xFF,
             74,                             // command 74 =
                                             //   CMD_READ_IO_SYSTEM_CAPABILITIES
-            0x00,                           // byte count is 0
+            0x00,                           // byte count
             0x00                            // checksum default to 0
           ]
         )
@@ -308,7 +317,7 @@ module.exports = {
                                 contents[20],
               univCmdRevision:  contents[21],
               deviceTag:        new Uint8Array(contents.buffer.slice(22, 54)),
-              checksum:         contents[53]
+              checksum:         contents[54]
             };
             console.log(JSON.stringify(hartMessage));
             deferred.resolve({
@@ -345,7 +354,7 @@ module.exports = {
             gateway.deviceId       & 0xFF,
             84,                             // command 84 =
                                             //      CMD_READ_SUB_DEVICE_IDENTITY
-            0x02,                           // byte count is 0
+            0x02,                           // byte count
             deviceIndex >> 8 & 0xFF,        // device index
             deviceIndex      & 0xFF,
             0x00                            // checksum default to 0
@@ -354,6 +363,79 @@ module.exports = {
       )
     );
     return deferred.promise;
-  }
+  },
 
+  getTransmitterHartVariables: function(transmitter) {
+    var self = this;
+
+    var deferred = window.$q.defer();
+    window.tlantic.plugins.socket.sendBinary(
+      function(response) {
+        self.listeningQueue.push(
+          function(response) {
+            var message = self.fromHartMessage(response);
+            var contents = message.messageContents;
+
+            // return transmitter information
+            var hartMessage = {
+              frameSize:        contents[ 0],
+              deviceType:       contents[ 1] << 8 |
+                                contents[ 2],
+              deviceId:         contents[ 3] << 16 |
+                                contents[ 4] <<  8 |
+                                contents[ 5],
+              command:          contents[ 6],
+              byteCount:        contents[ 7],
+              responseCode:     contents[ 8],
+              status:           contents[ 9],
+              loopCurrent:      self.toFloat(contents.buffer.slice(10, 14)),
+              pvUnits:          contents[14],
+              pvValue:          self.toFloat(contents.buffer.slice(15, 19)),
+              svUnits:          contents[19],
+              svValue:          self.toFloat(contents.buffer.slice(20, 24)),
+              tvUnits:          contents[24],
+              tvValue:          self.toFloat(contents.buffer.slice(25, 29)),
+              qvUnits:          contents[29],
+              qvValue:          self.toFloat(contents.buffer.slice(30, 34)),
+              checksum:         contents[34]
+            };
+            console.log(JSON.stringify(hartMessage));
+            deferred.resolve({
+              pvValue: hartMessage.pvValue,
+              pvUnits: hartMessage.pvUnits,
+              svValue: hartMessage.svValue,
+              svUnits: hartMessage.svUnits,
+              tvValue: hartMessage.tvValue,
+              tvUnits: hartMessage.tvUnits,
+              qvValue: hartMessage.qvValue,
+              qvUnits: hartMessage.qvUnits
+            });
+          }
+        );
+      },
+      function(message) {
+        deferred.reject(message);
+      },
+      self.connectionId,
+      self.toHartMessage(
+        self.MESSAGE_IDS['hart-wired-pdu'],
+        5,                                      // transaction id
+        self.withChecksum(
+          [
+            0x82,                               // large frame
+            transmitter.deviceType >> 8 & 0xFF, // device type
+            transmitter.deviceType      & 0xFF,
+            transmitter.deviceId >> 16 & 0xFF,  // device id
+            transmitter.deviceId >>  8 & 0xFF,
+            transmitter.deviceId       & 0xFF,
+            3,                                  // command 3 =
+                                                //    Read All Dynamic Variables
+            0x00,                               // byte count
+            0x00                                // checksum default to 0
+          ]
+        )
+      )
+    );
+    return deferred.promise;
+  }
 };

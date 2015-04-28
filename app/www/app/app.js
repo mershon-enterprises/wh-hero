@@ -61,7 +61,7 @@ angular.module('hydra', [
           }
         ).then(
           function(deviceCount) {
-            alert(deviceCount + ' transmitters in Gateway');
+            //alert(deviceCount + ' transmitters in Gateway');
             return window.hart.getTransmitter(window.gateway, 1);
           },
           function(message) {
@@ -69,10 +69,18 @@ angular.module('hydra', [
           }
         ).then(
           function(transmitter) {
-            alert(JSON.stringify(transmitter));
+            //alert(JSON.stringify(transmitter));
+            return window.hart.getTransmitterHartVariables(transmitter);
           },
           function(message) {
             alert('Failed to get transmitter 1');
+          }
+        ).then(
+          function(hartVariables) {
+            alert(JSON.stringify(hartVariables));
+          },
+          function(message) {
+            alert('Failed to get transmitter HART variables');
           }
         );
 
