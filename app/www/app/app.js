@@ -34,56 +34,9 @@ angular.module('hydra', [
 
         // Make 'q' module available to Cordova plugins
         window.$q = $q;
-        window.gateway = null;
-        window.hart.connect(
-          '192.168.1.12', 5094
-        ).then(
-          function() {
-            return window.hart.login();
-          },
-          function(message) {
-            alert('Failed to connect to Gateway!');
-          }
-        ).then(
-          function(loginResponse) {
-            return window.hart.getGateway();
-          },
-          function(message) {
-            alert('Failed to login to Gateway!');
-          }
-        ).then(
-          function(gateway) {
-            window.gateway = gateway;
-            return window.hart.getGatewayDeviceCount(window.gateway);
-          },
-          function(message) {
-            alert('Failed to call getGateway');
-          }
-        ).then(
-          function(deviceCount) {
-            //alert(deviceCount + ' transmitters in Gateway');
-            return window.hart.getTransmitter(window.gateway, 1);
-          },
-          function(message) {
-            alert('Failed to call getDGatewayDeviceCount');
-          }
-        ).then(
-          function(transmitter) {
-            //alert(JSON.stringify(transmitter));
-            return window.hart.getTransmitterHartVariables(transmitter);
-          },
-          function(message) {
-            alert('Failed to get transmitter 1');
-          }
-        ).then(
-          function(hartVariables) {
-            alert(JSON.stringify(hartVariables));
-          },
-          function(message) {
-            alert('Failed to get transmitter HART variables');
-          }
-        );
-
+        window.parser.init('10.0.1.113', 5094).then(function() {
+          window.parser.enablePolling();
+        });
     });
 })
 

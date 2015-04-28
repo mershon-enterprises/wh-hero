@@ -13,9 +13,14 @@
       url="https://github.com/mershon-enterprises/cdv-socket-plugin" commit="763544ed68e9e08bb9850b189e1e4ade958bbe09" />
 
   <asset src="www/hart.js" target="js/hart.js"/>
+  <asset src="www/parser.js" target="js/parser.js"/>
 
   <js-module src="www/hart.js" name="hart">
     <clobbers target="hart" />
+  </js-module>
+
+  <js-module src="www/parser.js" name="parser">
+    <clobbers target="parser" />
   </js-module>
 
 </plugin>
