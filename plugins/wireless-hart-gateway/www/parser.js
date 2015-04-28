@@ -124,6 +124,9 @@ module.exports = {
   },
 
   enablePolling: function() {
+    if (this.pollingEnabled === true)
+      return;
+
     this.pollingEnabled = true;
     console.log('Polling enabled');
     this.poll(1);
@@ -131,6 +134,11 @@ module.exports = {
 
   disablePolling: function() {
     this.pollingEnabled = false;
+    this.gateway = null;
+    this.deviceCount = 0;
+    this.transmitters = [];
+    this.hartVariables = {};
+
     console.log('Polling disabled');
   },
 
