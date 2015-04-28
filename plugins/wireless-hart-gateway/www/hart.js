@@ -321,6 +321,7 @@ module.exports = {
             };
             console.log(JSON.stringify(hartMessage));
             deferred.resolve({
+              status: hartMessage.status,
               deviceType: hartMessage.subDeviceType,
               deviceId:   hartMessage.subDeviceId,
               macAddress: ('00-1B-1E-' +
