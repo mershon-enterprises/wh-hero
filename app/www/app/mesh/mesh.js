@@ -1,4 +1,6 @@
-angular.module('hydra.mesh', [])
+angular.module('hydra.mesh', [
+    'ui.bootstrap'
+])
 .config(function($stateProvider) {
         $stateProvider
             .state('hydra.mesh', {
