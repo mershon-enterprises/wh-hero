@@ -21,23 +21,16 @@ angular.module('hydra.transmitters.transmitter', [])
         }
 
         var id = $stateParams.transmitterId;
+        var transmitter = window.parser.transmitters[id];
+        var hartVariables = window.parser.hartVariables[transmitter['macAddress']];
         transmitterCtrl.transmitter = {
-            name: 'Transmitter ' + id,
-            pv: 1.23,
-            sv: 4.56,
-            tv: 7.89,
-            qv: 10.11
+            name: transmitter['name'] + ' (' + transmitter['macAddress'] + ')',
+            pv: hartVariables['pvValue'],
+            sv: hartVariables['svValue'],
+            tv: hartVariables['tvValue'],
+            qv: hartVariables['qvValue']
         }
 
-        transmitterCtrl.isConnected = true;
+        transmitterCtrl.isConnected = transmitter['status'] == 208;
         transmitterCtrl.transmitterId = $stateParams.transmitterId;
-
-        /**
-         * Note: Once the views are done, create a transmitterService.
-         *       It should be stubbed out with static data, but it should still
-         *       use local-storage to store the transmitter data.
-         *       Use the transmitterId passed as a state param to fetch the
-         *       transmitter from the service.
-         */
-
     });
