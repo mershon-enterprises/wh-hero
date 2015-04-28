@@ -60,8 +60,8 @@ angular.module('hydra.mesh', [
         };
 
         var options = {
-            height: 200,
-            width: 300
+            height: 400,
+            width: 400
         };
 
         var viewTransmitter = function(id)
