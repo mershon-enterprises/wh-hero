@@ -1,3 +1,4 @@
+/* global d3 */
 angular.module('ng-d3', [])
     .directive('d3Force', function($timeout, $window) {
         return {
@@ -9,12 +10,16 @@ angular.module('ng-d3', [])
             },
             templateUrl: 'app/ng-d3/force/force.tmpl.html',
             link: function(scope, elem) {
-
+                
+                var color = d3.scale.category20();
+                
                 var width = $window.innerWidth,
                     height = $window.innerHeight * 0.5;
 
-                var color = d3.scale.category20();
-
+                var svg = d3.select(elem[0]).append("svg")
+                    .attr("width", width)
+                    .attr("height", height); 
+                
                 var force = d3.layout.force()
                     .nodes(d3.values(scope.data.nodes))
                     .links(scope.data.links)
@@ -22,11 +27,7 @@ angular.module('ng-d3', [])
                     .linkDistance(60)
                     .charge(-300)
                     .on("tick", tick)
-                    .start();
-
-                var svg = d3.select(elem[0]).append("svg")
-                    .attr("width", width)
-                    .attr("height", height);
+                    .start();     
 
                 var link = svg.selectAll(".link")
                     .data(force.links())
@@ -37,22 +38,21 @@ angular.module('ng-d3', [])
                     .data(force.nodes())
                     .enter().append("g")
                     .attr("class", "node")
-                    .on("mouseover", mouseover)
-                    .on("mouseout", mouseout)
                     .call(force.drag);
 
                 node.append("circle")
-                    .attr("r", 6)
-                    .style("fill", function(d) { return color(d.group); });
+                    .attr("id", function(d) { return "node-circle-" + d.id; })
+                    .attr("r", 8)
+                    .style("fill", function(d) { return d.selected ? "#CC0000" : color(d.group); });
 
                 node.append("text")
-                    .attr("x", 12)
+                    .attr("x", 16)
                     .attr("dy", ".35em")
                     .attr("font-size", "14px")
                     .attr("stroke", "#222")
                     .attr("stroke-width", "1")
                     .text(function(d) { return d.name; });
-
+                
                 function tick() {
                     link
                         .attr("x1", function(d) { return d.source.x; })
@@ -63,18 +63,28 @@ angular.module('ng-d3', [])
                     node
                         .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
                 }
+            
+                    
+                scope.$watch('data', function (data) {
+                    console.log("watched");
+                    svg.selectAll(".node").select("circle")
+                        .transition()
+                        .duration(300)
+                        .style("fill", function(d) { return d.selected ? "#CC0000" : color(d.group); });
 
-                function mouseover() {
-                    d3.select(this).select("circle").transition()
-                        .duration(750)
-                        .attr("r", 12);
-                }
+                }, true);
 
-                function mouseout() {
-                    d3.select(this).select("circle").transition()
-                        .duration(750)
-                        .attr("r", 6);
+                
+                function zoomIn() {
+                    
                 }
+                
+                function zoomOut() {
+                    
+                }
+                
+                scope.zoomIn = zoomIn;
+                scope.zoomOut = zoomOut;
 
             }
         }

@@ -7,3 +7,10 @@
     stroke: #999;
     stroke-opacity: .6;
 }
+
+.zoom-buttons {
+    width: 20px;
+    position: absolute;
+    right: 80px;
+    left: auto;
+}

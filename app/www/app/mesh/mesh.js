@@ -38,14 +38,14 @@ angular.module('hydra.mesh', [
         };
 
         var nodes = [
-            {"id": 0, "name":"Transmitter 1","group":0},
-            {"id": 1, "name":"Transmitter 2","group":1},
-            {"id": 2, "name":"Transmitter 3","group":1},
-            {"id": 3, "name":"Transmitter 4","group":1},
-            {"id": 4, "name":"Transmitter 5","group":1},
-            {"id": 5, "name":"Transmitter 6","group":1},
-            {"id": 6, "name":"Transmitter 7","group":1},
-            {"id": 7, "name":"Transmitter 8","group":1}
+            {"id": 0, "name":"Transmitter 1","group":0,"selected":false},
+            {"id": 1, "name":"Transmitter 2","group":1,"selected":false},
+            {"id": 2, "name":"Transmitter 3","group":1,"selected":false},
+            {"id": 3, "name":"Transmitter 4","group":1,"selected":false},
+            {"id": 4, "name":"Transmitter 5","group":1,"selected":false},
+            {"id": 5, "name":"Transmitter 6","group":1,"selected":false},
+            {"id": 6, "name":"Transmitter 7","group":1,"selected":false},
+            {"id": 7, "name":"Transmitter 8","group":1,"selected":false}
         ];
         var links = [
             {"source":0,"target":1,"value":1},
@@ -70,10 +70,17 @@ angular.module('hydra.mesh', [
             width: 400
         };
 
-        var viewTransmitter = function(id)
+        var selectedNodeChanged = function()
         {
-            $state.go('hydra.transmitter', {transmitterId: id})
+            _.each(nodes, function(node) {
+                // set all nodes to unselected, except the node whose id matched the selected node's id.
+                node.selected = this.selectedNode && this.selectedNode.id == node.id;
+            }, this);
+            
+            meshCtrl.chartData.nodes = nodes;
         };
+        
+        this.selectedNodeChanged = selectedNodeChanged;
 
         meshCtrl.chartData = data;
 

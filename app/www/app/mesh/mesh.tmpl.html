@@ -1,5 +1,5 @@
 <ion-view view-title="Mesh">
-    <ion-content>
+    <ion-content scroll="false">
         <d3-force data="meshCtrl.chartData" options="meshCtrl.chartOptions"
                  style="margin:0 auto"></d3-force>
                  
@@ -7,10 +7,10 @@
             <div class="input-label">
               Transmitter
             </div>
-            <select>
-              <option>1</option>
-              <option selected>2</option>
-              <option>3</option>
+            <select
+                ng-model="meshCtrl.selectedNode"
+                ng-options="node.name for node in meshCtrl.chartData.nodes"
+                ng-change="meshCtrl.selectedNodeChanged()">
             </select>
           </label>
         </div>
