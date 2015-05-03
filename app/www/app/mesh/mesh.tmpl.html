@@ -3,16 +3,23 @@
         <d3-force data="meshCtrl.chartData" options="meshCtrl.chartOptions"
                  style="margin:0 auto"></d3-force>
                  
-          <label class="item item-input item-select">
-            <div class="input-label">
-              Transmitter
+        <label class="item item-input item-select">
+          <div class="input-label">
+            Transmitter
+          </div>
+          <select
+              ng-model="meshCtrl.selectedNode"
+              ng-options="node.name for node in meshCtrl.chartData.nodes"
+              ng-change="meshCtrl.selectedNodeChanged()">
+          </select>
+        </label>
+        <div class="list list-inset" ng-if="meshCtrl.selectedNode">
+            <div class="item">
+                [{{meshCtrl.selectedNode.id}}] - {{meshCtrl.selectedNode.name}}
             </div>
-            <select
-                ng-model="meshCtrl.selectedNode"
-                ng-options="node.name for node in meshCtrl.chartData.nodes"
-                ng-change="meshCtrl.selectedNodeChanged()">
-            </select>
-          </label>
+            <div class="item">
+                <a ui-sref="hydra.transmitter({transmitterId:meshCtrl.selectedNode.id})">View Detail</a>
+            </div>
         </div>
     </ion-content>
 </ion-view>
