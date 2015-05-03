@@ -1,5 +1,5 @@
 angular.module('ng-d3', [])
-    .directive('d3Force', function($timeout) {
+    .directive('d3Force', function($timeout, $window) {
         return {
             restrict: 'E',
             replace: true,
@@ -10,8 +10,8 @@ angular.module('ng-d3', [])
             templateUrl: 'app/ng-d3/force/force.tmpl.html',
             link: function(scope, elem) {
 
-                var width = 500,
-                    height = 500;
+                var width = $window.innerWidth,
+                    height = $window.innerHeight * 0.5;
 
                 var color = d3.scale.category20();
 
