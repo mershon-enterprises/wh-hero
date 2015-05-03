@@ -3,12 +3,16 @@
         <d3-force data="meshCtrl.chartData" options="meshCtrl.chartOptions"
                  style="margin:0 auto"></d3-force>
                  
-        <div class="list list-inset">
-            <label class="item item-input">
-                <input type="text" ng-model="meshCtrl.selectedTransmitter" 
-            typeahead="state for state in meshCtrl.states | filter:$viewValue | limitTo:8"
-            placeholder="search">
-            </label>
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Transmitter
+            </div>
+            <select>
+              <option>1</option>
+              <option selected>2</option>
+              <option>3</option>
+            </select>
+          </label>
         </div>
     </ion-content>
 </ion-view>
