@@ -110,8 +110,7 @@
     diaplay: table-row;
 }
 
-.table-cell-125 {
-    width: 125px;
+.table-cell-125, .table-cell-300 {
     color: #555;
     padding: 10px;
     display: table-cell;
@@ -122,11 +121,23 @@
     overflow: hidden;
 }
 
-.table-row:last-of-type .table-cell-125 {
+.table-cell-125 {
+    width: 125px;
+}
+
+.table-cell-300 {
+    width: 300px;
+}
+
+.table-row:last-of-type .table-cell-125, .table-row:last-of-type .table-cell-300 {
     border-bottom-width: 1px;
 }
 
 .clickable:hover {
     cursor: pointer;
     background-color: #e1e1e1;
+}
+
+text {
+    pointer-events: none;
 }

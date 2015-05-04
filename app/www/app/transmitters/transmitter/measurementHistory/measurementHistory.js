@@ -16,9 +16,6 @@ angular.module('hydra.transmitters.transmitter.measurementHistory', [
     .controller('MeasurementHistoryCtrl', function($stateParams, $state){
         var measurementHistoryCtrl = this;
 
-        console.log('transmitterId: ' + $stateParams.transmitterId)
-        console.log('measurementId: ' + $stateParams.measurementId)
-
         // if no transmitter id provided, change state to hydra.transmitters
         if ($stateParams.transmitterId == '')
         {
