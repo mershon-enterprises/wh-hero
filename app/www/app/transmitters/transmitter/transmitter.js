@@ -29,8 +29,12 @@ angular.module('hydra.transmitters.transmitter', [])
             sv: hartVariables['svValue'],
             tv: hartVariables['tvValue'],
             qv: hartVariables['qvValue']
-        }
-
+        };
         transmitterCtrl.isConnected = transmitter['status'] == 208;
         transmitterCtrl.transmitterId = $stateParams.transmitterId;
+
+        var viewHistory = function(measurementName)
+        {
+            $state.go('hydra.measurementHistory', {transmitterId: id, measurementId: measurementName})
+        };
     });

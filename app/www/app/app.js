@@ -10,7 +10,8 @@ angular.module('hydra', [
     'hydra.dashboard',
     'hydra.mesh',
     'hydra.transmitters',
-    'hydra.transmitters.transmitter'
+    'hydra.transmitters.transmitter',
+    'hydra.transmitters.transmitter.measurementHistory'
 ])
 
 .run(function($ionicPlatform, $q) {
