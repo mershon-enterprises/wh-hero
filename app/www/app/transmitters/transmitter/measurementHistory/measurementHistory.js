@@ -33,7 +33,7 @@ angular.module('hero.transmitters.transmitter.measurementHistory', [
         var measurementName = $stateParams.measurementName;
 
         var transmitter = TransmitterService.fetchByMacAddress(macAddress);
-        var measurementHistory = RecordService.getTransmitterMeasurementHistory(measurementName);
+        var measurementHistory = RecordService.getTransmitterMeasurementHistory(macAddress, measurementName);
 
         measurementHistoryCtrl.transmitter = transmitter;
         measurementHistoryCtrl.chartData = measurementHistory;

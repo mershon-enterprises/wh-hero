@@ -22,9 +22,6 @@ angular.module('hero.transmitters.transmitter', [])
 
         var macAddress = $stateParams.macAddress;
 
-        // FIXME -- delete line
-        console.log('Fetching transmitter: ' + macAddress);
-
         var transmitterInfo = TransmitterService.fetchByMacAddress(macAddress);
         var transmitterData = RecordService.fetchMostRecentTransmitterData(macAddress);
 
@@ -33,12 +30,12 @@ angular.module('hero.transmitters.transmitter', [])
         if (transmitterInfo === undefined) {
             transmitter = {
                 name: undefined,
-                data: []
+                data: transmitterData
             };
         } else {
             transmitter = {
                 name: transmitterInfo.name,
-                data: [transmitterData]
+                data: transmitterData
             };
         }
                 

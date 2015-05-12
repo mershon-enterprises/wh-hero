@@ -23,8 +23,8 @@ angular.module('ng-d3.line', [])
                                 x: 'date',
                                 value: ['value']
                             },
-                            xFormat: '%Y-%m-%d %H:%M:%S',
-                            type: 'spline' 
+                            xFormat: '%Y-%m-%dT%H:%M:%S.%LZ',
+                            type: 'spline'
                         },
                         axis: {
                             x: {
