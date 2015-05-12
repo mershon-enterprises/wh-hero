@@ -1,9 +1,10 @@
-angular.module('hydra.mesh', [
-    'ui.bootstrap'
+angular.module('hero.mesh', [
+    'ui.bootstrap',
+    'ng-d3.force'
 ])
 .config(function($stateProvider) {
         $stateProvider
-            .state('hydra.mesh', {
+            .state('hero.mesh', {
                 url: "/mesh",
                 views: {
                     'menuContent': {
@@ -13,53 +14,61 @@ angular.module('hydra.mesh', [
                 }
             })
     })
-.controller('MeshCtrl', function($stateParams, $state){
+.controller('MeshCtrl', function($stateParams, $state, TransmitterService){
 
         var meshCtrl = this;
         
-        var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Dakota', 'North Carolina', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+        var transmitters = TransmitterService.getAll();
+        var nodes = [];
+        var nodeIndex = {};
+        var links = [];
+        var dL = {}; // discoveredLinks
         
-        meshCtrl.states = states;
-        
-        meshCtrl.typeAheadTemplateUrl = "app/mesh/typeAhead.tmpl.html";
+        var i = 0;
+        _.each(transmitters, function(t) {
+            nodeIndex[t.mac] = i;
+            i++;
+        }, this);
 
-        var transmitter = {
-            name: 'Transmitter ' + $stateParams.transmitterId,
-            measurements: [
-                { date: '2015-04-25 09:15:13 AM', pv: 1.5, sv: 2.7, tv: 4.6, qv: 3.8 },
-                { date: '2015-04-25 09:15:48 AM', pv: 1.6, sv: 2.4, tv: 4.4, qv: 3.9 },
-                { date: '2015-04-25 09:16:14 AM', pv: 1.3, sv: 2.3, tv: 4.2, qv: 3.7 },
-                { date: '2015-04-25 09:16:49 AM', pv: 1.4, sv: 2.6, tv: 4.8, qv: 3.5 },
-                { date: '2015-04-25 09:17:15 AM', pv: 1.5, sv: 2.7, tv: 4.6, qv: 3.8 },
-                { date: '2015-04-25 09:17:49 AM', pv: 1.6, sv: 2.4, tv: 4.4, qv: 3.9 },
-                { date: '2015-04-25 09:18:16 AM', pv: 1.3, sv: 2.3, tv: 4.2, qv: 3.7 },
-                { date: '2015-04-25 09:18:50 AM', pv: 1.4, sv: 2.6, tv: 4.8, qv: 3.5 }
-            ]
-        };
+        _.each(transmitters, function(t) {
+            nodes.push({
+                "macAddress": t.mac,
+                "name": t.name,
+                "group": 1,
+                "selected": false
+            });
+            
+            _.each(t.neighbors, function(n) {
 
-        var nodes = [
-            {"id": 0, "name":"Transmitter 1","group":0,"selected":false},
-            {"id": 1, "name":"Transmitter 2","group":1,"selected":false},
-            {"id": 2, "name":"Transmitter 3","group":1,"selected":false},
-            {"id": 3, "name":"Transmitter 4","group":1,"selected":false},
-            {"id": 4, "name":"Transmitter 5","group":1,"selected":false},
-            {"id": 5, "name":"Transmitter 6","group":1,"selected":false},
-            {"id": 6, "name":"Transmitter 7","group":1,"selected":false},
-            {"id": 7, "name":"Transmitter 8","group":1,"selected":false}
-        ];
-        var links = [
-            {"source":0,"target":1,"value":1},
-            {"source":0,"target":2,"value":1},
-            {"source":0,"target":3,"value":1},
-            {"source":1,"target":4,"value":1},
-            {"source":3,"target":4,"value":1},
-            {"source":3,"target":5,"value":1},
-            {"source":4,"target":5,"value":1},
-            {"source":4,"target":6,"value":1},
-            {"source":5,"target":6,"value":1},
-            {"source":6,"target":7,"value":1}
+                if ( 
+                    
+                       ( 
+                           // mac has no neighbors yet OR mac has neighbors, but not this one 
+                           (typeof dL[t.mac] == 'undefined') || ((typeof dL[t.mac] != 'undefined') && (dL[t.mac].indexOf(n) == -1)) 
+                            
+                       ) 
+                    &&     // AND
+                      (
+                            // neighbor has no neighbors yet OR neighbors has neighbors, but not this one
+                           (typeof dL[n] == 'undefined') || ((typeof dL[n] != 'undefined') && (dL[n].indexOf(t.mac) == -1))
+                            
+                       )
+                    
+                    )
+                     {
+                         // set an array if the neighbor list is undefined
+                         dL[t.mac] = dL[t.mac] || [];
+                        
+                         links.push({"source":nodeIndex[t.mac], "target": nodeIndex[n], value:1});
+                         
+                         // keep track of the discovered link
+                         dL[t.mac].push(n);
+                     }
+                
+            }, meshCtrl);
+            
+        }, meshCtrl);
 
-        ];
         var data = {
             nodes: nodes,
             links: links
@@ -74,25 +83,13 @@ angular.module('hydra.mesh', [
         {
             _.each(nodes, function(node) {
                 // set all nodes to unselected, except the node whose id matched the selected node's id.
-                node.selected = this.selectedNode && this.selectedNode.id == node.id;
-            }, this);
-            
+                node.selected = meshCtrl.selectedNode && meshCtrl.selectedNode.macAddress == node.macAddress;
+            }, meshCtrl);
             meshCtrl.chartData.nodes = nodes;
         };
         
-        this.selectedNodeChanged = selectedNodeChanged;
-
+        meshCtrl.selectedNodeChanged = selectedNodeChanged;
         meshCtrl.chartData = data;
-
         meshCtrl.chartOptions = options;
-
-
-        /**
-         * Note: Once the views are done, create a transmitterService.
-         *       It should be stubbed out with static data, but it should still
-         *       use local-storage to store the transmitter data.
-         *       Use the transmitterId passed as a state param to fetch the
-         *       transmitter from the service.
-         */
 
     });

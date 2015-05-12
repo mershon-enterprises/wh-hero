@@ -8,9 +8,8 @@ Thumbs.db
 # Bower lib dependencies
 /**/lib/*
 
-# Ionic dependencies
-/**/resources/android
-/**/resources/ios
+# Ionic boilerplate
+/**/resources/*
 
 # Vim swapfiles
 *.swp

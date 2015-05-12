@@ -1,6 +1,6 @@
 <ion-view view-title="Mesh">
     <ion-content scroll="false">
-        <d3-force data="meshCtrl.chartData" options="meshCtrl.chartOptions"
+        <d3-force data="meshCtrl.chartData"
                  style="margin:0 auto"></d3-force>
                  
         <label class="item item-input item-select">
@@ -15,10 +15,10 @@
         </label>
         <div class="list list-inset" ng-if="meshCtrl.selectedNode">
             <div class="item">
-                [{{meshCtrl.selectedNode.id}}] - {{meshCtrl.selectedNode.name}}
+                {{meshCtrl.selectedNode.name}} : [{{meshCtrl.selectedNode.macAddress}}] 
             </div>
             <div class="item">
-                <a ui-sref="hydra.transmitter({transmitterId:meshCtrl.selectedNode.id})">View Detail</a>
+                <a ui-sref="hero.transmitter({macAddress:meshCtrl.selectedNode.macAddress})">View Detail</a>
             </div>
         </div>
     </ion-content>

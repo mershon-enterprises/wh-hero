@@ -1,16 +1,6 @@
 <ion-view view-title="{{measurementHistoryCtrl.transmitter.name}}">
     <ion-content>
-        <d3-line data="measurementHistoryCtrl.chartData" options="measurementHistoryCtrl.chartOptions"
-                 style="width: 300px; margin:0 auto"></d3-line>
-
-        <div class="table table-250">
-
-            <!-- update with ng-repeat -->
-            <div class="table-row" ng-repeat="data in measurementHistoryCtrl.chartData">
-                <div class="table-cell-125">{{data.date | date : "mediumTime"}}</div>
-                <div class="table-cell-125">{{data.value}}</div>
-            </div>
-
-        </div>
+        <d3-line data="measurementHistoryCtrl.chartData"
+                 style="margin:0 auto"></d3-line>
     </ion-content>
 </ion-view>

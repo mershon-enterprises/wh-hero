@@ -1,11 +1,10 @@
 /* global d3 */
-angular.module('ng-d3', [])
+angular.module('ng-d3.force', [])
     .directive('d3Force', function($timeout, $window) {
         return {
             restrict: 'E',
             replace: true,
             scope:  {
-                options: "=options",
                 data: "=data"
             },
             templateUrl: 'app/ng-d3/force/force.tmpl.html',
@@ -25,7 +24,7 @@ angular.module('ng-d3', [])
                     .links(scope.data.links)
                     .size([width, height])
                     .linkDistance(60)
-                    .charge(-300)
+                    .charge(-500)
                     .on("tick", tick)
                     .start();     
 
@@ -43,7 +42,7 @@ angular.module('ng-d3', [])
                 node.append("circle")
                     .attr("id", function(d) { return "node-circle-" + d.id; })
                     .attr("r", 8)
-                    .style("fill", function(d) { return d.selected ? "#CC0000" : color(d.group); });
+                    .style("fill", function(d) { return d.selected ? "#CC0000" : color(d.group); })
 
                 node.append("text")
                     .attr("x", 16)
@@ -66,7 +65,6 @@ angular.module('ng-d3', [])
             
                     
                 scope.$watch('data', function (data) {
-                    console.log("watched");
                     svg.selectAll(".node").select("circle")
                         .transition()
                         .duration(300)
