@@ -587,19 +587,28 @@ module.exports = {
               // :neighbor-path-stability :float32
               var base = 49;
               for (var rel=0; rel<hartMessage.activeNeighbors; rel++) {
+                  var deviceType = contents[base+0] <<  8 |
+                                   contents[base+1];
+                  var deviceId = contents[base+2] << 16 |
+                                 contents[base+3] <<  8 |
+                                 contents[base+4];
+                  var macAddress =
+                      ('00-1B-1E-' +
+                      ('00' + contents[base+0].toString(16)).substr(-2) + '-' +
+                      ('00' + contents[base+1].toString(16)).substr(-2) + '-' +
+                      ('00' + contents[base+2].toString(16)).substr(-2) + '-' +
+                      ('00' + contents[base+3].toString(16)).substr(-2) + '-' +
+                      ('00' + contents[base+4].toString(16)).substr(-2)).
+                      toUpperCase();
+                  if (deviceType === gateway.deviceType &&
+                      deviceId === gateway.deviceId) {
+                      macAddress = 'Gateway';
+                  }
+
                   hartMessage.neighbors.push({
-                    deviceType: contents[base+0] <<  8 |
-                                contents[base+1],
-                    deviceId:   contents[base+2] << 16 |
-                                contents[base+3] <<  8 |
-                                contents[base+4],
-                    macAddress: ('00-1B-1E-' +
-                       ('00' + contents[base+0].toString(16)).substr(-2) + '-' +
-                       ('00' + contents[base+1].toString(16)).substr(-2) + '-' +
-                       ('00' + contents[base+2].toString(16)).substr(-2) + '-' +
-                       ('00' + contents[base+3].toString(16)).substr(-2) + '-' +
-                       ('00' + contents[base+4].toString(16)).substr(-2)).
-                      toUpperCase(),
+                    deviceType: deviceType,
+                    deviceId:   deviceId,
+                    macAddress: macAddress,
                     rssiTo: -(255 - contents[base+5]),
                     rssiFrom: -(255 - contents[base+6]),
                     pathStability: self.toFloat(contents.buffer.slice(base+7, base+11))

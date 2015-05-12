@@ -17,13 +17,20 @@ angular.module('hero.mesh', [
 .controller('MeshCtrl', function($stateParams, $state, TransmitterService){
 
         var meshCtrl = this;
-        
-        var transmitters = TransmitterService.getAll();
+
+        var transmitters = TransmitterService.getAll().concat(
+            // add the gateway as a node for things to connect to
+            { connected: true,
+               name:      'Gateway',
+               mac:       'Gateway',
+               neighbors: []
+            }
+        );
         var nodes = [];
         var nodeIndex = {};
         var links = [];
         var dL = {}; // discoveredLinks
-        
+
         var i = 0;
         _.each(transmitters, function(t) {
             nodeIndex[t.mac] = i;
