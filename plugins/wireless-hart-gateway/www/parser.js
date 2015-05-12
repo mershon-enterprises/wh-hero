@@ -5,6 +5,7 @@ module.exports = {
   deviceCount: 0,
   transmitters: [],
   hartVariables: {},
+  neighborStatistics: {},
   pollingEnabled: false,
 
   init: function(host, port) {
@@ -92,6 +93,8 @@ module.exports = {
     // but normally we can just get the hart variables
     maybeGetTransmitter().then(
       function(transmitter) {
+        console.log('getting hart variables for transmitter transmitter ' +
+                    deviceIndex);
         return window.hart.getTransmitterHartVariables(transmitter);
       },
       function() {
@@ -99,9 +102,39 @@ module.exports = {
       }
     ).then(
       function(hartVariables) {
-        console.log('getting hart variables for transmitter transmitter ' +
-                    deviceIndex);
         self.hartVariables[self.transmitters[deviceIndex]['macAddress']] = hartVariables;
+
+        // after getting the hart variables, get the neighbor info
+        console.log('getting neighbor statistics for transmitter transmitter ' +
+                    deviceIndex);
+        return window.hart.getNeighborStatistics(self.gateway,
+            self.transmitters[deviceIndex]);
+      },
+      function(message) {
+        console.log('Failed to get hart variables for transmitter ' +
+                    deviceIndex);
+      }
+    ).then(
+      function(hartMessage) {
+        // if we get status 33 or 34, keep trying once per second until we
+        // get neighbor stats
+        //
+        //var tryStatistics = function(xmtr) {
+        if (hartMessage.status === 33 || hartMessage.status === 34) {
+          if (self.pollingEnabled === true) {
+            // FIXME -- implement
+            console.log('retry statistics for transmitter ' + deviceIndex);
+            // window.setTimeout(
+            //   function() {
+            //     tryStatistics(xmtr);
+            //   },
+            //   1000
+            // );
+          }
+        } else {
+          self.neighborStatistics[self.transmitters[deviceIndex]['macAddress']] = hartMessage;
+        }
+        // tryStatistics(transmitter);
 
         // now, poll the next transmitter
         if (self.pollingEnabled === true) {
@@ -116,8 +149,8 @@ module.exports = {
           );
         }
       },
-      function(message) {
-        console.log('Failed to get hart variables for transmitter ' +
+      function() {
+        console.log('Failed to get neighbor statistics for transmitter ' +
                     deviceIndex);
       }
     );
