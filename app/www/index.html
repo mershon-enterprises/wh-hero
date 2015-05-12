@@ -7,8 +7,11 @@
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+      
+    <!-- c3 stylesheet -->
+    <link href="lib/c3/c3.min.css" rel="stylesheet">
 
-    <!-- custom d3 directive css : These will be bundled and minified someday -->
+    <!-- directive css : These will be bundled and minified someday -->
     <link href="app/ng-d3/line/line.css" rel="stylesheet">
     <link href="app/ng-d3/force/force.css" rel="stylesheet">
 
@@ -27,7 +30,9 @@
     <script src="lib/lodash/lodash.min.js"></script>
 
     <!-- d3 -->
-    <script src="lib/d3/d3.js"></script>
+    <script src="lib/d3/d3.min.js"></script>
+    <!-- c3 -->
+    <script src="lib/c3/c3.min.js"></script>
 
     <!-- ui-bootstrap -->
     <script src="lib/angular-bootstrap/ui-bootstrap.min.js"></script>
@@ -39,15 +44,22 @@
 
     <!-- app -->
     <script src="app/app.js"></script>
+      
+    <!-- services -->
+    <script src="app/services/transmitterService.js"></script>
+    <script src="app/services/recordService.js"></script>
+      
+    <!-- controllers -->
     <script src="app/dashboard/dashboard.js"></script>
     <script src="app/menu/menu.js"></script>
     <script src="app/mesh/mesh.js"></script>
     <script src="app/transmitters/transmitters.js"></script>
     <script src="app/transmitters/transmitter/transmitter.js"></script>
     <script src="app/transmitters/transmitter/measurementHistory/measurementHistory.js"></script>
+      
   </head>
 
-  <body ng-app="hydra">
+  <body ng-app="hero">
     <ion-nav-view></ion-nav-view>
   </body>
 </html>

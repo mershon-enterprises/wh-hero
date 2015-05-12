@@ -4,7 +4,7 @@
 
             <a class="item item-icon-left item-icon-right" href="#"
                ng-repeat="transmitter in transmittersCtrl.transmitters"
-                    ui-sref="hydra.transmitter({transmitterId:transmitter.id})">
+                    ui-sref="hero.transmitter({macAddress:transmitter.mac})">
                 <i class="icon ion-wifi" ng-class="{'icon-connected': transmitter.connected,
                                                     'icon-disconnected': !transmitter.connected}"></i>
                 <h2>{{transmitter.name}}</h2>

@@ -1,4 +1,4 @@
-angular.module('hydra.menu', [])
+angular.module('hero.menu', [])
 
     .controller('MenuCtrl', function($scope, $timeout) {
         var menuCtrl = this;

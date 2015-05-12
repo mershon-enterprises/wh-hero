@@ -1,7 +1,7 @@
-angular.module('hydra.transmitters', [])
+angular.module('hero.transmitters', [])
     .config(function($stateProvider) {
         $stateProvider
-            .state('hydra.transmitters', {
+            .state('hero.transmitters', {
                 url: "/transmitters",
                 views: {
                     'menuContent': {
@@ -9,21 +9,9 @@ angular.module('hydra.transmitters', [])
                         controller: 'TransmittersCtrl as transmittersCtrl'
                     }
                 }
-            })
+            });
     })
-    .controller('TransmittersCtrl', function(){
+    .controller('TransmittersCtrl', function(TransmitterService) {
         var transmittersCtrl = this;
-
-        var count = 1;
-        transmittersCtrl.transmitters = _.map(
-            window.parser.getTransmitterList(),
-            function(t) {
-                return {
-                    id: count++,
-                    connected: t['status'] === 208,
-                    name: t['name'],
-                    mac: t['macAddress']
-                };
-            }
-        );
+        transmittersCtrl.transmitters = TransmitterService.getAll();
     });

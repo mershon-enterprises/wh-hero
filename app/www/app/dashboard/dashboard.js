@@ -1,9 +1,9 @@
-angular.module('hydra.dashboard', [
+angular.module('hero.dashboard', [
 
 ])
     .config(function($stateProvider) {
         $stateProvider
-            .state('hydra.dashboard', {
+            .state('hero.dashboard', {
                 url: "/dashboard",
                 views: {
                     'menuContent': {

@@ -1,17 +1,11 @@
-// Ionic Starter App
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.controllers' is found in controllers.js
-angular.module('hydra', [
+var hero = angular.module('hero', [
     'ionic',
-    'hydra.menu',
-    'hydra.dashboard',
-    'hydra.mesh',
-    'hydra.transmitters',
-    'hydra.transmitters.transmitter',
-    'hydra.transmitters.transmitter.measurementHistory'
+    'hero.menu',
+    'hero.dashboard',
+    'hero.mesh',
+    'hero.transmitters',
+    'hero.transmitters.transmitter',
+    'hero.transmitters.transmitter.measurementHistory'
 ])
 
 .run(function($ionicPlatform, $q) {
@@ -44,7 +38,7 @@ angular.module('hydra', [
 .config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
 
-    .state('hydra', {
+    .state('hero', {
         url: "",
         abstract: true,
         templateUrl: "app/menu/menu.tmpl.html",
