@@ -100,7 +100,13 @@ module.exports = {
       }
     ).then(
       function(hartVariables) {
-        self.hartVariables[self.transmitters[deviceIndex]['macAddress']] = hartVariables;
+        var transmitter = self.transmitters[deviceIndex];
+        var macAddress = transmitter['macAddress'];
+        if (self.hartVariables[macAddress] === undefined) {
+          self.hartVariables[macAddress] = [];
+        }
+        // push the new value onto the front of the array
+        self.hartVariables[macAddress].unshift(hartVariables);
 
         // now, poll the next transmitter
         if (self.pollingEnabled === true) {

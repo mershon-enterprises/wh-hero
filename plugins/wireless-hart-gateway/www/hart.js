@@ -403,6 +403,7 @@ module.exports = {
             };
             console.log(JSON.stringify(hartMessage));
             deferred.resolve({
+              date: new Date().toISOString(),
               pvValue: hartMessage.pvValue,
               pvUnits: hartMessage.pvUnits,
               svValue: hartMessage.svValue,
