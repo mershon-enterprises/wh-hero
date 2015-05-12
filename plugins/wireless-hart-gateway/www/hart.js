@@ -144,7 +144,7 @@ module.exports = {
                               contents[3] <<  8 |
                               contents[4]
             };
-            console.log(JSON.stringify(connection));
+            //console.log(JSON.stringify(connection));
             deferred.resolve(connection);
           }
         );
@@ -197,7 +197,7 @@ module.exports = {
                                 contents[16] <<  8 |
                                 contents[17]
             };
-            console.log(JSON.stringify(gateway));
+            //console.log(JSON.stringify(gateway));
             deferred.resolve(gateway);
           }
         );
@@ -249,7 +249,7 @@ module.exports = {
               deviceCount:      contents[13] << 8 |
                                 contents[14]
             };
-            console.log(JSON.stringify(hartMessage));
+            //console.log(JSON.stringify(hartMessage));
             // subtract 1 from device count since the gateway counts itself
             deferred.resolve(hartMessage.deviceCount - 1);
           }
@@ -401,7 +401,7 @@ module.exports = {
               qvValue:          self.toFloat(contents.buffer.slice(30, 34)),
               checksum:         contents[34]
             };
-            console.log(JSON.stringify(hartMessage));
+            //console.log(JSON.stringify(hartMessage));
             deferred.resolve({
               date: new Date().toISOString(),
               pvValue: hartMessage.pvValue,
@@ -608,7 +608,7 @@ module.exports = {
               }
             }
 
-            console.log(JSON.stringify(hartMessage));
+            //console.log(JSON.stringify(hartMessage));
             deferred.resolve(hartMessage);
           }
         );

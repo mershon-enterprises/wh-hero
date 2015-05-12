@@ -61,7 +61,7 @@ module.exports = {
     var deferred = window.$q.defer();
 
     if (self.transmitters[deviceIndex] === undefined) {
-      console.log('getting transmitter ' + deviceIndex);
+      //console.log('getting transmitter ' + deviceIndex);
       window.hart.getTransmitter(self.gateway, deviceIndex).then(
         function(transmitter) {
           self.transmitters[deviceIndex] = transmitter;
@@ -87,7 +87,7 @@ module.exports = {
       return;
     }
 
-    console.log('polling for device ' + deviceIndex);
+    //console.log('polling for device ' + deviceIndex);
 
     self.maybeGetTransmitter(deviceIndex).then(
       function(transmitter) {
@@ -156,7 +156,7 @@ module.exports = {
         //
         if (hartMessage.status === 33 || hartMessage.status === 34) {
           if (self.pollingEnabled === true) {
-            console.log('retry statistics for transmitter ' + deviceIndex);
+            //console.log('retry statistics for transmitter ' + deviceIndex);
             window.setTimeout(
               function() {
                 self.pollStatistics(deviceIndex);
