@@ -133,14 +133,17 @@ module.exports = {
     console.log('getting neighbor statistics for transmitter transmitter ' +
                 deviceIndex);
 
-    self.maybeGetTransmitter(deviceIndex).then(
-      function(transmitter) {
-        return window.hart.getNeighborStatistics(self.gateway, transmitter);
-      },
-      function() {
-        // shouldn't happen???
-      }
-    ).then(
+    if (self.transmitters[deviceIndex] === undefined) {
+      // don't poll statistics unless we already have the transmitter info
+      window.setTimeout(
+        function() {
+          self.pollStatistics(deviceIndex);
+        }, 500 // ms
+      );
+      return;
+    }
+
+    window.hart.getNeighborStatistics(self.gateway, self.transmitters[deviceIndex]).then(
       function(hartMessage) {
         // if we get status 33 or 34, keep trying once per second until we
         // get neighbor stats
@@ -151,8 +154,7 @@ module.exports = {
             window.setTimeout(
               function() {
                 self.pollStatistics(deviceIndex);
-              },
-              1000
+              }, 1000 // ms
             );
           }
         } else {

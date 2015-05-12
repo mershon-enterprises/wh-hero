@@ -319,23 +319,27 @@ module.exports = {
               deviceTag:        new Uint8Array(contents.buffer.slice(22, 54)),
               checksum:         contents[54]
             };
-            console.log(JSON.stringify(hartMessage));
-            deferred.resolve({
-              status: hartMessage.status,
-              deviceType: hartMessage.subDeviceType,
-              deviceId:   hartMessage.subDeviceId,
-              macAddress: ('00-1B-1E-' +
-                           ('00' + contents[16].toString(16)).substr(-2) + '-' +
-                           ('00' + contents[17].toString(16)).substr(-2) + '-' +
-                           ('00' + contents[18].toString(16)).substr(-2) + '-' +
-                           ('00' + contents[19].toString(16)).substr(-2) + '-' +
-                           ('00' + contents[20].toString(16)).substr(-2)).
-                          toUpperCase(),
-              name:       String.fromCharCode.
-                                 apply(null, hartMessage.deviceTag).
-                                 split("\0").        // split on null-terminator
-                                 shift()             // and grab the head
-            });
+            //console.log(JSON.stringify(hartMessage));
+            try {
+              deferred.resolve({
+                status: hartMessage.status,
+                deviceType: hartMessage.subDeviceType,
+                deviceId:   hartMessage.subDeviceId,
+                macAddress: ('00-1B-1E-' +
+                             ('00' + contents[16].toString(16)).substr(-2) + '-' +
+                             ('00' + contents[17].toString(16)).substr(-2) + '-' +
+                             ('00' + contents[18].toString(16)).substr(-2) + '-' +
+                             ('00' + contents[19].toString(16)).substr(-2) + '-' +
+                             ('00' + contents[20].toString(16)).substr(-2)).
+                            toUpperCase(),
+                name:       String.fromCharCode.
+                                   apply(null, hartMessage.deviceTag).
+                                   split("\0").        // split on null-terminator
+                                   shift()             // and grab the head
+              });
+            } catch (e) {
+              deferred.reject('Failed to parse result for transmitter ' + deviceIndex);
+            }
           }
         );
       },
