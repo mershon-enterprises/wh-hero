@@ -439,5 +439,207 @@ module.exports = {
       )
     );
     return deferred.promise;
+  },
+
+  drainDelayedResponse: function(transmitter) {
+    var self = this;
+
+    var deferred = window.$q.defer();
+    window.tlantic.plugins.socket.sendBinary(
+      function(response) {
+        self.listeningQueue.push(
+          function(response) {
+            var message = self.fromHartMessage(response);
+            var contents = message.messageContents;
+
+            // return transmitter information
+            var hartMessage = {
+              frameSize:        contents[ 0],
+              deviceType:       contents[ 1] << 8 |
+                                contents[ 2],
+              deviceId:         contents[ 3] << 16 |
+                                contents[ 4] <<  8 |
+                                contents[ 5],
+              command:          contents[ 6],
+              byteCount:        contents[ 7],
+              responseCode:     contents[ 8],
+              status:           contents[ 9],
+              checksum:         contents[10]
+            };
+            //console.log(JSON.stringify(hartMessage));
+            deferred.resolve({
+              complete: (hartMessage.status === 0)
+            });
+          }
+        );
+      },
+      function(message) {
+        deferred.reject(message);
+      },
+      self.connectionId,
+      self.toHartMessage(
+        self.MESSAGE_IDS['hart-wired-pdu'],
+        6,                                      // transaction id
+        self.withChecksum(
+          [
+            0x82,                               // large frame
+            transmitter.deviceType >> 8 & 0xFF, // device type
+            transmitter.deviceType      & 0xFF,
+            transmitter.deviceId >> 16 & 0xFF,  // device id
+            transmitter.deviceId >>  8 & 0xFF,
+            transmitter.deviceId       & 0xFF,
+            106,                                // command 106 =
+                                                //    Drain Delayed Response
+            0x00,                               // byte count
+            0x00                                // checksum default to 0
+          ]
+        )
+      )
+    );
+    return deferred.promise;
+  },
+
+  getNeighborStatistics: function(gateway, transmitter) {
+    var self = this;
+
+    var deferred = window.$q.defer();
+    window.tlantic.plugins.socket.sendBinary(
+      function(response) {
+        self.listeningQueue.push(
+          function(response) {
+            var message = self.fromHartMessage(response);
+            var contents = message.messageContents;
+
+            var hartMessage = undefined;
+            // if we get status 33 that means a new delayed response has been
+            // initiated.
+            //
+            // if we get status 34 that means a delayed response is currently
+            // processing.
+            if (contents[9] === 33 || contents[9] === 34) {
+              // return delayed status
+              hartMessage = {
+                frameSize:        contents[ 0],
+                deviceType:       contents[ 1] << 8 |
+                                  contents[ 2],
+                deviceId:         contents[ 3] << 16 |
+                                  contents[ 4] <<  8 |
+                                  contents[ 5],
+                command:          contents[ 6],
+                byteCount:        contents[ 7],
+                responseCode:     contents[ 8],
+                status:           contents[ 9]
+              };
+            } else {
+              // return transmitter information
+              hartMessage = {
+                // frameSize:        contents[ 0],
+                // deviceType:       contents[ 1] << 8 |
+                //                   contents[ 2],
+                // deviceId:         contents[ 3] << 16 |
+                //                   contents[ 4] <<  8 |
+                //                   contents[ 5],
+                // command:          contents[ 6],
+                // byteCount:        contents[ 7],
+                responseCode:     contents[ 8],
+                status:           contents[ 9],
+                //uniqueStatsId:     contents[10] << 32 |
+                //                   contents[11] << 24 |
+                //                   contents[12] << 16 |
+                //                   contents[13] <<  8 |
+                //                   contents[14],
+                radioNodeId:      contents[15] << 24 |
+                                  contents[16] << 16 |
+                                  contents[17] <<  8 |
+                                  contents[18],
+                // radioMacId:       contents[19] << 56 |
+                //                   contents[20] << 48 |
+                //                   contents[21] << 40 |
+                //                   contents[22] << 32 |
+                //                   contents[23] << 24 |
+                //                   contents[24] << 16 |
+                //                   contents[25] <<  8 |
+                //                   contents[26],
+                nodeState:        contents[27],
+                reliabilityPct:   self.toFloat(contents.buffer.slice(28, 32)),
+                latencyPct:       self.toFloat(contents.buffer.slice(32, 36)),
+                networkJoins:     contents[36] <<  8 |
+                                  contents[37],
+                // joinTime:         contents[38] << 56 |
+                //                   contents[39] << 48 |
+                //                   contents[40] << 40 |
+                //                   contents[41] << 32 |
+                //                   contents[42] << 24 |
+                //                   contents[43] << 16 |
+                //                   contents[44] <<  8 |
+                //                   contents[45],
+                neighborNeeded:   contents[46],
+                activeNeighbors:  contents[47] <<  8 |
+                                  contents[48],
+                neighbors: [ /* filled in below */ ]
+              };
+
+              // add the neighbors
+              // :neighbor-id             [:ubyte :ubyte :ubyte :ubyte :ubyte]
+              // :neighbor-rssi-to        :byte
+              // :neighbor-rssi-from      :byte
+              // :neighbor-path-stability :float32
+              var base = 49;
+              for (var rel=0; rel<hartMessage.activeNeighbors; rel++) {
+                  hartMessage.neighbors.push({
+                    deviceType: contents[base+0] <<  8 |
+                                contents[base+1],
+                    deviceId:   contents[base+2] << 16 |
+                                contents[base+3] <<  8 |
+                                contents[base+4],
+                    macAddress: ('00-1B-1E-' +
+                       ('00' + contents[base+0].toString(16)).substr(-2) + '-' +
+                       ('00' + contents[base+1].toString(16)).substr(-2) + '-' +
+                       ('00' + contents[base+2].toString(16)).substr(-2) + '-' +
+                       ('00' + contents[base+3].toString(16)).substr(-2) + '-' +
+                       ('00' + contents[base+4].toString(16)).substr(-2)).
+                      toUpperCase(),
+                    rssiTo: -(255 - contents[base+5]),
+                    rssiFrom: -(255 - contents[base+6]),
+                    pathStability: self.toFloat(contents.buffer.slice(base+7, base+11))
+                  });
+                  base += 11;
+              }
+            }
+
+            console.log(JSON.stringify(hartMessage));
+            deferred.resolve(hartMessage);
+          }
+        );
+      },
+      function(message) {
+        deferred.reject(message);
+      },
+      self.connectionId,
+      self.toHartMessage(
+        self.MESSAGE_IDS['hart-wired-pdu'],
+        7,                                      // transaction id
+        self.withChecksum(
+          [
+            0x82,                               // large frame
+            gateway.deviceType >> 8 & 0xFF, // device type
+            gateway.deviceType      & 0xFF,
+            gateway.deviceId >> 16 & 0xFF,  // device id
+            gateway.deviceId >>  8 & 0xFF,
+            gateway.deviceId       & 0xFF,
+            202,                                // command 202 =
+                                                //    Get Neighbor Statistics
+            0x05,                               // byte count
+            transmitter.deviceType >> 8 & 0xFF, // device type
+            transmitter.deviceType      & 0xFF,
+            transmitter.deviceId >> 16 & 0xFF,  // device id
+            transmitter.deviceId >>  8 & 0xFF,
+            transmitter.deviceId       & 0xFF,
+            0x00                                // checksum default to 0
+          ]
+        )
+      )
+    );
+    return deferred.promise;
   }
 };
