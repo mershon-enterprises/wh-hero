@@ -107,7 +107,7 @@ module.exports = {
           window.setTimeout(
             function() {
               if (deviceIndex === self.deviceCount) {
-                self.poll(1); // start over at 1
+                self.pollStatistics(1); // start over at 1
               } else {
                 self.poll(deviceIndex + 1);
               }
@@ -165,7 +165,7 @@ module.exports = {
             window.setTimeout(
               function() {
                 if (deviceIndex === self.deviceCount) {
-                  self.pollStatistics(1); // start over at 1
+                  self.poll(1); // start over at 1
                 } else {
                   self.pollStatistics(deviceIndex + 1);
                 }
@@ -189,7 +189,6 @@ module.exports = {
     this.pollingEnabled = true;
     console.log('Polling enabled');
     this.poll(1);
-    this.pollStatistics(1);
   },
 
   disablePolling: function() {
