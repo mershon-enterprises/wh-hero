@@ -66,6 +66,23 @@ module.exports = {
   connectionId: null,
   listeningQueue: [],
 
+  disconnect: function() {
+    var self = this;
+
+    var deferred = window.$q.defer();
+    window.tlantic.plugins.socket.disconnect(
+      function() {
+        deferred.resolve();
+      },
+      function() {
+        // error. inconceivable
+        deferred.reject();
+      },
+      self.connectionId
+    );
+    return deferred.promise;
+  },
+
 
   connect: function(host, port) {
     var self = this;
@@ -439,6 +456,7 @@ module.exports = {
         )
       )
     );
+
     return deferred.promise;
   },
 

@@ -29,9 +29,11 @@ var hero = angular.module('hero', [
 
         // Make 'q' module available to Cordova plugins
         window.$q = $q;
-        window.parser.init('192.168.1.10', 5094).then(function() {
-          window.parser.enablePolling();
-        });
+
+        // start parsing immediately
+        if (window.parser !== undefined) {
+            window.parser.enablePolling();
+        }
     });
 })
 

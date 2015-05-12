@@ -4,6 +4,9 @@ angular.module('hero.menu', [])
         var menuCtrl = this;
 
         menuCtrl.eraseData = function() {
-            console.log('data erased...');
+            if (window.parser !== undefined) {
+                window.parser.resetData();
+                console.log('data erased...');
+            }
         };
     })

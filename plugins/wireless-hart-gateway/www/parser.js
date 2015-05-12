@@ -1,6 +1,10 @@
 /*global cordova, module*/
 
 module.exports = {
+  DEFAULT_HOST: "192.168.1.10",
+  DEFAULT_PORT: 5094,
+  MIN_DELAY: 0, // ms
+
   gateway: null,
   deviceCount: 0,
   transmitters: [],
@@ -14,13 +18,15 @@ module.exports = {
     var deferred = window.$q.defer();
 
     // connect to the gateway
+    var firstFailure;
     window.hart.connect(host, port).then(
       function() {
         return window.hart.login();
       },
       function(message) {
-        console.log('Failed to connect to Gateway!');
-        deferred.reject();
+        firstFailure = 'Failed to connect to the Gateway at ' + host;
+        console.log(firstFailure);
+        deferred.reject(firstFailure);
       }
     ).then(
       // then get the gateway meta-data
@@ -28,8 +34,18 @@ module.exports = {
         return window.hart.getGateway();
       },
       function(message) {
-        console.log('Failed to login to Gateway!');
-        deferred.reject();
+        if (firstFailure === undefined) {
+            firstFailure = 'Failed to login to Gateway at ' + host;
+        }
+        window.hart.disconnect(
+          function() {
+            console.log(firstFailure);
+            deferred.reject(firstFailure);
+          },
+          function() {
+            // error. inconceivable
+          }
+        );
       }
     ).then(
       // then get the gateway device count
@@ -38,8 +54,11 @@ module.exports = {
         return window.hart.getGatewayDeviceCount(self.gateway);
       },
       function(message) {
-        console.log('Failed to get Gateway meta-data!');
-        deferred.reject();
+        if (firstFailure === undefined) {
+            firstFailure = 'Failed to get Gateway meta-data at ' + host;
+        }
+        console.log(firstFailure);
+        deferred.reject(firstFailure);
       }
     ).then(
       // then get gateway device count
@@ -48,8 +67,11 @@ module.exports = {
         deferred.resolve();
       },
       function(message) {
-        console.log('Failed to get Gateway device count!');
-        deferred.reject();
+        if (firstFailure === undefined) {
+            firstFailure = 'Failed to get Gateway device count at ' + host;
+        }
+        console.log(firstFailure);
+        deferred.reject(firstFailure);
       }
     );
 
@@ -117,7 +139,7 @@ module.exports = {
               } else {
                 self.poll(deviceIndex + 1);
               }
-            }, 50 // ms
+            }, self.MIN_DELAY + 50 // ms
           );
         }
       },
@@ -144,11 +166,12 @@ module.exports = {
       window.setTimeout(
         function() {
           self.pollStatistics(deviceIndex);
-        }, 500 // ms
+        }, self.MIN_DELAY + 500 // ms
       );
       return;
     }
 
+    var deferred = $q.defer();
     window.hart.getNeighborStatistics(self.gateway, self.transmitters[deviceIndex]).then(
       function(hartMessage) {
         // if we get status 33 or 34, keep trying once per second until we
@@ -156,15 +179,17 @@ module.exports = {
         //
         if (hartMessage.status === 33 || hartMessage.status === 34) {
           if (self.pollingEnabled === true) {
-            //console.log('retry statistics for transmitter ' + deviceIndex);
+            console.log('retry statistics for transmitter ' + deviceIndex);
             window.setTimeout(
               function() {
+                deferred.resolve();
                 self.pollStatistics(deviceIndex);
-              }, 1000 // ms
+              }, self.MIN_DELAY + 1000 // ms
             );
           }
         } else {
           self.neighborStatistics[self.transmitters[deviceIndex]['macAddress']] = hartMessage;
+          deferred.resolve();
 
           // now, poll the next transmitter
           if (self.pollingEnabled === true) {
@@ -175,36 +200,60 @@ module.exports = {
                 } else {
                   self.pollStatistics(deviceIndex + 1);
                 }
-              }, 50 // ms
+              }, self.MIN_DELAY + 50 // ms
             );
           }
 
         }
       },
       function() {
+        deferred.reject();
         console.log('Failed to get neighbor statistics for transmitter ' +
                     deviceIndex);
       }
     );
   },
 
-  enablePolling: function() {
-    if (this.pollingEnabled === true)
+  enablePolling: function(host, port) {
+    var self = this;
+    if (self.pollingEnabled === true) {
       return;
+    }
 
-    this.pollingEnabled = true;
-    console.log('Polling enabled');
-    this.poll(1);
+    var h = host, p = port;
+    if (h === undefined && p === undefined) {
+      h = self.DEFAULT_HOST;
+      p = self.DEFAULT_PORT;
+    }
+
+    var deferred = $q.defer();
+    self.init(h, p).then(
+      function() {
+        self.pollingEnabled = true;
+        console.log('Polling enabled');
+        self.poll(1);
+
+        deferred.resolve();
+      },
+      function(errorMessage) {
+        deferred.reject(errorMessage);
+      }
+    );
+    return deferred.promise;
   },
 
   disablePolling: function() {
     this.pollingEnabled = false;
     this.gateway = null;
     this.deviceCount = 0;
-    this.transmitters = [];
-    this.hartVariables = {};
 
     console.log('Polling disabled');
+    return window.hart.disconnect();
+  },
+
+  resetData: function() {
+    this.hartVariables = {};
+    this.neighborStatistics = {};
   },
 
   getTransmitterList: function() {

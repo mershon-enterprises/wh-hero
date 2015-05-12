@@ -24,12 +24,39 @@ angular.module('hero.dashboard', [
 
         dashboardCtrl.toggleConnectivity = function() {
             if (dashboardCtrl.isConnected) {
-                dashboardCtrl.isConnected = false;
-                dashboardCtrl.connectivityMessage = "Disconnected";
+                var disable = function() {
+                    dashboardCtrl.isConnected = false;
+                    dashboardCtrl.connectivityMessage = "Disconnected";
+                }
+
+                if (window.parser !== undefined) {
+                    window.parser.disablePolling().then(
+                        disable,
+                        function() {
+                            // error. inconceivable
+                        }
+                    );
+                }
             } else {
-                dashboardCtrl.isConnected = true;
-                dashboardCtrl.connectivityMessage = "Connected";
-                dashboardCtrl.lastUpdated = new Date();
+                var enable = function() {
+                    dashboardCtrl.isConnected = true;
+                    dashboardCtrl.connectivityMessage = "Connected";
+                    dashboardCtrl.lastUpdated = new Date();
+                };
+
+                if (window.parser !== undefined) {
+                    // production
+                    window.parser.enablePolling().then(
+                        enable,
+                        function(errorMessage) {
+                            alert(errorMessage);
+                        }
+                    );
+                } else {
+                    // dev mode
+                    enable();
+                }
+
             }
         };
     })
