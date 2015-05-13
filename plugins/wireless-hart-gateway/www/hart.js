@@ -97,7 +97,7 @@ module.exports = {
             self.listeningQueue.length > 0) {
 
           // convert character buffer to bytes
-          var charBuffer = atob(ev.metadata.data);
+          var charBuffer = ev.metadata.data;
           var length = charBuffer.length;
           var buffer = new Uint8Array(new ArrayBuffer(length));
           for (var i = 0; i < length; i++) {
