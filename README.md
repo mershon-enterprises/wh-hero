@@ -1,9 +1,9 @@
-Hydra WirelessHART Mobile App
+Hydra WirelessHART Hero
 ==
 
-Objective
+Description
 --
-Build a flashy prototype for demonstration at the Bakersfield ISA "table-top" expo, Friday May 15th, 2015. The prototype should be a native smartphone application that incorporates Estimote Bluetooth LE beacons, Emerson WirelessHART Gateways and transmitters, and WiFi.
+A flashy sales tool for demonstrating WirelessHART gateway instrumentation.
 
 Intended Workflow
 --
@@ -26,24 +26,6 @@ Technologies
 - Ionic w/Cordova plugins for controlling WiFi connection and collecting data from WirelessHART gateways.
 - AngularJS
 - D3.js
-
-Deliverables
---
-1. Wireframe sketches of UI
-  1. Menus
-  1. Transmitter List screen
-  1. Mesh Overview screen
-  1. Transmitter View screen
-  1. Transmitter Trend screen
-1. Prototype Cordova plugin for manipulating WiFi connection state (does one already exist?)
-1. Prototype Cordova plugin for collecting data from a WirelessHART gateway
-1. Prototype Cordova plugin utilizing Estimote SDK to identify nearby beacons (does one already exist?)
-1. Prototype Ionic app utilizing Cordova plugins with Hydra and Mershon Enterprises branding
-1. Implementation of UI menus
-1. Implementation of Transmitter List screen
-1. Implementation of Mesh Overview screen
-1. Implementation of Transmitter View screen
-1. Implementation of Transmitter Trend screen
 
 License
 ==
