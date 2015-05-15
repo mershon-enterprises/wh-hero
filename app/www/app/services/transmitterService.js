@@ -43,13 +43,13 @@ hero.service('TransmitterService', function() {
                 // not in production -- return dummy data
                 transmitters = [
                     { connected: true, name: "Transmitter 1", mac: "01-02-03-04-05-06-07-08", neighbors: ["02-03-04-05-06-07-08-09","03-04-05-06-07-08-09-10","04-05-06-07-08-09-10-11"] },
-                    { connected: true, name: "Transmitter 2", mac: "02-03-04-05-06-07-08-09", neighbors: ["01-02-03-04-05-06-07-08","05-06-07-08-09-10-11-12"] },
-                    { connected: true, name: "Transmitter 3", mac: "03-04-05-06-07-08-09-10", neighbors: ["01-02-03-04-05-06-07-08"] },
-                    { connected: true, name: "Transmitter 4", mac: "04-05-06-07-08-09-10-11", neighbors: ["01-02-03-04-05-06-07-08","05-06-07-08-09-10-11-12","06-07-08-09-10-11-12-13"] },
+                    { connected: true, name: "Transmitter 2", mac: "02-03-04-05-06-07-08-09", neighbors: ["Gateway","01-02-03-04-05-06-07-08","05-06-07-08-09-10-11-12"] },
+                    { connected: true, name: "Transmitter 3", mac: "03-04-05-06-07-08-09-10", neighbors: ["Gateway","01-02-03-04-05-06-07-08"] },
+                    { connected: true, name: "Transmitter 4", mac: "04-05-06-07-08-09-10-11", neighbors: ["Gateway","01-02-03-04-05-06-07-08","05-06-07-08-09-10-11-12","06-07-08-09-10-11-12-13"] },
                     { connected: true, name: "Transmitter 5", mac: "05-06-07-08-09-10-11-12", neighbors: ["04-05-06-07-08-09-10-11","02-03-04-05-06-07-08-09","06-07-08-09-10-11-12-13","07-08-09-10-11-12-13-14"] },
                     { connected: true, name: "Transmitter 6", mac: "06-07-08-09-10-11-12-13", neighbors: ["04-05-06-07-08-09-10-11","05-06-07-08-09-10-11-12","07-08-09-10-11-12-13-14"] },
                     { connected: true, name: "Transmitter 7", mac: "07-08-09-10-11-12-13-14", neighbors: ["05-06-07-08-09-10-11-12","06-07-08-09-10-11-12-13","08-09-10-11-12-13-14-15"] },
-                    { connected: true, name: "Transmitter 8", mac: "08-09-10-11-12-13-14-15", neighbors: ["07-08-09-10-11-12-13-14"] }
+                    { connected: true, name: "Transmitter 8", mac: "08-09-10-11-12-13-14-15", neighbors: ["Gateway","07-08-09-10-11-12-13-14"] }
 
                 ];
             }
