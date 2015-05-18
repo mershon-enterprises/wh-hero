@@ -26,77 +26,94 @@ angular.module('hero.mesh', [
                neighbors: []
             }
         );
-        var nodes = [];
-        var nodeIndex = {};
-        var links = [];
-        var dL = {}; // discoveredLinks
-
-        var i = 0;
-        _.each(transmitters, function(t) {
-            nodeIndex[t.mac] = i;
-            i++;
-        }, this);
-
-        _.each(transmitters, function(t) {
-            nodes.push({
-                "macAddress": t.mac,
-                "name": t.name,
-                "group": 1,
-                "selected": false
-            });
-
-            _.each(t.neighbors, function(n) {
-
-                if (
-
-                       (
-                           // mac has no neighbors yet OR mac has neighbors, but not this one
-                           (typeof dL[t.mac] == 'undefined') || ((typeof dL[t.mac] != 'undefined') && (dL[t.mac].indexOf(n) == -1))
-
-                       )
-                    &&     // AND
-                      (
-                            // neighbor has no neighbors yet OR neighbors has neighbors, but not this one
-                           (typeof dL[n] == 'undefined') || ((typeof dL[n] != 'undefined') && (dL[n].indexOf(t.mac) == -1))
-
-                       )
-
-                    )
-                     {
-                         // set an array if the neighbor list is undefined
-                         dL[t.mac] = dL[t.mac] || [];
-
-                         links.push({"source":nodeIndex[t.mac], "target": nodeIndex[n], value:1});
-
-                         // keep track of the discovered link
-                         dL[t.mac].push(n);
-                     }
-
+        
+        function populateNodes()
+        {
+            var nodeMap = {};
+            var nodes = [];
+            var allNodes = [];
+            var links = [];
+            var dL = {}; // discoveredLinks
+            
+            // create node objects from transmitters by adding the "group" and "selected" properties
+            // create a map from mac to node
+            var i = 0;
+            _.each(transmitters.slice(0), function(t) {
+                t.group = 1;
+                t.selected = false;
+                t.id = i; // for the force graph links
+                nodeMap[t.mac] = t;
+                nodes.push(t);
+                allNodes.push(t);
+                i++;
+            }, this);
+        
+            // filter nodes if necessary
+            if (meshCtrl.selectedNode != null)
+            {
+                _.each(allNodes, function(t) {
+                    var shouldRemoveTransmitter = true;
+                    _.each(meshCtrl.selectedNode.neighbors, function(n) {
+                        if (t.mac == n || t.mac == meshCtrl.selectedNode.mac)
+                        {
+                            shouldRemoveTransmitter = false;
+                        }
+                    }, this);
+                    if (shouldRemoveTransmitter)
+                    {
+                        var index = nodes.indexOf(t);
+                        if (index > -1) { nodes.splice(index, 1); }
+                    }
+                }, this);
+            }
+    
+            // build links
+            _.each(nodes, function(t) {
+                _.each(t.neighbors, function(n) {
+    
+                    // if mac has no discovered neighbors yet OR mac has discovered neighbors, but not this one
+                    // AND
+                    // if neighbor has no neighbors discovered yet OR neighbors has discovered neighbors, but not this one
+                    if ( 
+                        ((typeof dL[t.mac] == 'undefined') || ((typeof dL[t.mac] != 'undefined') && (dL[t.mac].indexOf(n) == -1)))
+                        &&
+                        ((typeof dL[n] == 'undefined') || ((typeof dL[n] != 'undefined') && (dL[n].indexOf(t.mac) == -1)))
+                        )
+                         {
+                             // set an array if the neighbor list is undefined
+                             dL[t.mac] = dL[t.mac] || [];
+                             links.push({"source":nodeMap[t.mac], "target": nodeMap[n]});
+    
+                             // keep track of the discovered link
+                             dL[t.mac].push(n);
+                         }
+    
+                }, meshCtrl);
+    
             }, meshCtrl);
+            
+            // Set the data on the scope
+            meshCtrl.chartData = {
+                nodes: nodes,
+                links: links
+            };
+            
+            meshCtrl.transmitters = allNodes;
+        }
+        
+        populateNodes();
 
-        }, meshCtrl);
-
-        var data = {
-            nodes: nodes,
-            links: links
-        };
-
+        var selectedNodeChanged = function()
+        {
+            populateNodes();
+        }        
+        
         var options = {
             height: 400,
             width: 400
         };
 
-        var selectedNodeChanged = function()
-        {
-            _.each(nodes, function(node) {
-                // set all nodes to unselected, except the node whose id matched the selected node's id.
-                node.selected = meshCtrl.selectedNode && meshCtrl.selectedNode.macAddress == node.macAddress;
-            }, meshCtrl);
-            meshCtrl.chartData.nodes = nodes;
-        };
-
         meshCtrl.selectedNodeChanged = selectedNodeChanged;
-        meshCtrl.chartData = data;
         meshCtrl.chartOptions = options;
 
     });

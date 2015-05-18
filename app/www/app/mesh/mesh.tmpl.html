@@ -9,7 +9,7 @@
           </div>
           <select
               ng-model="meshCtrl.selectedNode"
-              ng-options="node.name for node in meshCtrl.chartData.nodes"
+              ng-options="node.name for node in meshCtrl.transmitters"
               ng-change="meshCtrl.selectedNodeChanged()">
           </select>
         </label>
