@@ -260,4 +260,24 @@ module.exports = {
     return this.transmitters.slice(1); // drop the 0th item since it is always
                                        // undefined
   },
-};
+
+  load: function() {
+    var self = this;
+
+    // load/save data to localstorage
+    self.hartVariables = JSON.parse(localStorage.getItem('hartVariables'));
+    if (self.hartVariables === null)
+      self.hartVariables = {};
+    self.neighborStatistics = JSON.parse(localStorage.getItem('neighborStatistics'));
+    if (self.neighborStatistics === null)
+      self.neighborStatistics = {};
+    function onPause() {
+      console.log('Saving data to localStorage...');
+      localStorage.setItem('hartVariables', JSON.stringify(self.hartVariables));
+      localStorage.setItem('neighborStatistics', JSON.stringify(self.neighborStatistics));
+    }
+    document.addEventListener("pause", onPause, false);
+
+    return self;
+  }
+}.load();
