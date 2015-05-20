@@ -22,7 +22,13 @@ hero.service('TransmitterService', function() {
                             neighbors = _.map(
                                 stats.neighbors,
                                 function(n) {
-                                    return n['macAddress'];
+                                    return {
+                                        mac: n['macAddress'],
+                                        signalStrength: {
+                                            from: n['rssiFrom'],
+                                            to: n['rssiTo']
+                                        }
+                                    };
                                 }
                             );
                         }
