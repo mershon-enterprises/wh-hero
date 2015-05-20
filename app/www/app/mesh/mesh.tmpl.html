@@ -1,5 +1,5 @@
 <ion-view view-title="Mesh">
-    <ion-content scroll="false">
+    <ion-content>
         <d3-force data="meshCtrl.chartData"
                  style="margin:0 auto"></d3-force>
                  
@@ -20,6 +20,21 @@
             <div class="item">
                 <a ui-sref="hero.transmitter({macAddress:meshCtrl.selectedNode.macAddress})">View Detail</a>
             </div>
+            <div class="table table-250" ng-repeat="neighbor in meshCtrl.selectedNode.neighbors">
+                <div class="table-row">
+                    <div class="table-cell-250">{{neighbor.name}}</div>
+                </div>
+                <!-- update with ng-repeat -->
+                <div class="table-row" >
+                    <div class="table-cell-125">Signal To</div>
+                    <div class="table-cell-125">{{neighbor.signalStrength.to}} dB</div>
+                </div>
+                <div class="table-row" >
+                    <div class="table-cell-125">Signal From</div>
+                    <div class="table-cell-125">{{neighbor.signalStrength.from}} dB</div>
+                </div>
+            </div>
+            
         </div>
     </ion-content>
 </ion-view>

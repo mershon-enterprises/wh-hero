@@ -97,7 +97,7 @@
 /* Table */
 
 .table {
-    diaplay: table;
+    display: table;
     border-collapse: collapse;
     margin: 10px auto;
 }
@@ -110,7 +110,7 @@
     diaplay: table-row;
 }
 
-.table-cell-125, .table-cell-300 {
+.table-cell-125, .table-cell-250 {
     color: #555;
     padding: 10px;
     display: table-cell;
@@ -125,11 +125,11 @@
     width: 125px;
 }
 
-.table-cell-300 {
-    width: 300px;
+.table-cell-250 {
+    width: 250px;
 }
 
-.table-row:last-of-type .table-cell-125, .table-row:last-of-type .table-cell-300 {
+.table-row:last-of-type .table-cell-125, .table-row:last-of-type .table-cell-250 {
     border-bottom-width: 1px;
 }
 

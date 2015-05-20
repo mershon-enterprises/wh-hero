@@ -29,11 +29,11 @@ angular.module('hero.mesh', [
         
         function populateNodes()
         {
-            var nodeMap = {};    // a lookup object -- key: mac, value: node object
-            var nodes = [];      // the nodes to display
-            var allNodes = [];   // all the nodes available
-            var links = [];      // the links to display
-            var dL = {};         // discoveredLinks
+            var nodeMap = {};        // a lookup object -- key: mac, value: node object
+            var nodes = [];          // the nodes to display
+            var allNodes = [];       // all the nodes available
+            var links = [];          // the links to display
+            var dL = {};             // discoveredLinks
             
             // create node objects from transmitters by adding the "group" and "selected" properties
             // create a map from mac to node
@@ -58,7 +58,7 @@ angular.module('hero.mesh', [
                     
                     // check to see if the current node is a neighbor of the selected node by checking all the neighbors
                     _.each(meshCtrl.selectedNode.neighbors, function(n) {
-                        if (t.mac == n || t.mac == meshCtrl.selectedNode.mac)
+                        if (t.mac == n.mac || t.mac == meshCtrl.selectedNode.mac)
                         {
                             // if it's a neighbor, we don't want to remove it
                             shouldRemoveTransmitter = false;
@@ -71,7 +71,14 @@ angular.module('hero.mesh', [
                         var index = nodes.indexOf(t);
                         if (index > -1) { nodes.splice(index, 1); }
                     }
-                }, this);
+                }, meshCtrl);
+                
+                // build out neighbor detail
+                _.each(meshCtrl.selectedNode.neighbors, function(n) {
+                    // give it a name, since it isn't supplied (unless kevin wants to supply it)
+                    n.name = nodeMap[n.mac].name;
+                }, meshCtrl);
+                
             }
     
             // build links using the (possibly filtered) array of nodes
@@ -84,19 +91,19 @@ angular.module('hero.mesh', [
                     // AND
                     // both the source and target exist in the list of nodes
                     if ( 
-                        ((typeof dL[t.mac] == 'undefined') || ((typeof dL[t.mac] != 'undefined') && (dL[t.mac].indexOf(n) == -1)))
+                        ((typeof dL[t.mac] == 'undefined') || ((typeof dL[t.mac] != 'undefined') && (dL[t.mac].indexOf(n.mac) == -1)))
                         &&
-                        ((typeof dL[n] == 'undefined') || ((typeof dL[n] != 'undefined') && (dL[n].indexOf(t.mac) == -1)))
+                        ((typeof dL[n.mac] == 'undefined') || ((typeof dL[n.mac] != 'undefined') && (dL[n.mac].indexOf(t.mac) == -1)))
                         &&
-                        (nodes.indexOf(nodeMap[t.mac]) > -1 && nodes.indexOf(nodeMap[n]) > -1)
+                        (nodes.indexOf(nodeMap[t.mac]) > -1 && nodes.indexOf(nodeMap[n.mac]) > -1)
                         )
                          {
                              // set an array if the neighbor list is undefined
                              dL[t.mac] = dL[t.mac] || [];
-                             links.push({"source":nodeMap[t.mac], "target": nodeMap[n]});
+                             links.push({"source":nodeMap[t.mac], "target": nodeMap[n.mac]});
     
                              // keep track of the discovered link
-                             dL[t.mac].push(n);
+                             dL[t.mac].push(n.mac);
                          }
     
                 }, meshCtrl);
