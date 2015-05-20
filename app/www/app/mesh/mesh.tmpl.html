@@ -2,7 +2,7 @@
     <ion-content>
         <d3-force data="meshCtrl.chartData"
                  style="margin:0 auto"></d3-force>
-                 
+
         <label class="item item-input item-select">
           <div class="input-label">
             Transmitter
@@ -15,10 +15,10 @@
         </label>
         <div class="list list-inset" ng-if="meshCtrl.selectedNode">
             <div class="item">
-                {{meshCtrl.selectedNode.name}} : [{{meshCtrl.selectedNode.macAddress}}] 
+                {{meshCtrl.selectedNode.name}} : [{{meshCtrl.selectedNode.mac}}]
             </div>
             <div class="item">
-                <a ui-sref="hero.transmitter({macAddress:meshCtrl.selectedNode.macAddress})">View Detail</a>
+                <a ui-sref="hero.transmitter({macAddress:meshCtrl.selectedNode.mac})">View Detail</a>
             </div>
             <div class="table table-250" ng-repeat="neighbor in meshCtrl.selectedNode.neighbors">
                 <div class="table-row">
@@ -34,7 +34,7 @@
                     <div class="table-cell-125">{{neighbor.signalStrength.from}} dB</div>
                 </div>
             </div>
-            
+
         </div>
     </ion-content>
 </ion-view>
