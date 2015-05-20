@@ -38,24 +38,26 @@ angular.module('ng-d3.force', [])
                     $timeout(function() {
                         
                         link = link.data(force.links());
+                        
                         link
                             .enter().append("line")
                             .attr("class", "link");
+                            
                         link.exit().remove();
                         
                         node = node.data(force.nodes())
                             .attr("class", "node")
                             .call(force.drag);
                             
-                        node
-                            .enter()
-                            .append("g")
+                        var nodeGroup = node.enter().append("g");
+                        
+                        nodeGroup
                             .append("circle")
                             .attr("id", function(d) { return "node-circle-" + d.id; })
                             .attr("r", 8)
                             .style("fill", function(d) { return d.selected ? "#CC0000" : color(d.group); });
                             
-                        node
+                        nodeGroup
                             .append("text")
                             .attr("id",function(d) { return "text-" + d.id; })
                             .attr("x", 16)
@@ -83,15 +85,9 @@ angular.module('ng-d3.force', [])
                 }
                            
                 scope.$watch('data', function (data) {
-                    
-                    while (nodes.length > 0)
-                    {
-                        var n = nodes.pop();
-                        document.querySelector("text-" + n.id);
-                    }
-                        
-                    while (links.length > 0)
-                        links.pop();
+
+                        nodes.splice(0, nodes.length);
+                        links.splice(0,links.length);
                     
                     for (var i = 0; i < data.nodes.length; i++)
                         nodes.push(data.nodes[i]);
