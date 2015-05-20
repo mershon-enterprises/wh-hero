@@ -37,7 +37,7 @@ angular.module('ng-d3.force', [])
                 function start() {
                     $timeout(function() {
                         
-                        link = link.data(force.links());
+                        link = link.data(force.links(), function(d) { return d.source.mac + "-" + d.target.mac});
                         
                         link
                             .enter().append("line")
@@ -45,7 +45,7 @@ angular.module('ng-d3.force', [])
                             
                         link.exit().remove();
                         
-                        node = node.data(force.nodes())
+                        node = node.data(force.nodes(), function(d) { return d.mac; })
                             .attr("class", "node")
                             .call(force.drag);
                             
@@ -85,19 +85,11 @@ angular.module('ng-d3.force', [])
                 }
                            
                 scope.$watch('data', function (data) {
-
-                        nodes.splice(0, nodes.length);
-                        links.splice(0,links.length);
                     
-                    for (var i = 0; i < data.nodes.length; i++)
-                        nodes.push(data.nodes[i]);
-                        
-                    for (var i = 0; i < data.links.length; i++)
-                        links.push(data.links[i]);
-        
+                    force.nodes(data.nodes).links(data.links);
                     start();
-                }, true);
-                
+                    
+                }, true);                
             }
         }
     });
