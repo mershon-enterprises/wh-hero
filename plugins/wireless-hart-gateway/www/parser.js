@@ -272,7 +272,6 @@ module.exports = {
     if (self.neighborStatistics === null)
       self.neighborStatistics = {};
     function onPause() {
-      console.log('Saving data to localStorage...');
       localStorage.setItem('hartVariables', JSON.stringify(self.hartVariables));
       localStorage.setItem('neighborStatistics', JSON.stringify(self.neighborStatistics));
     }
