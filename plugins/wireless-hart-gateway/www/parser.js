@@ -216,8 +216,11 @@ module.exports = {
 
   enablePolling: function(host, port) {
     var self = this;
+    var deferred = $q.defer();
+
     if (self.pollingEnabled === true) {
-      return;
+      deferred.resolve();
+      return deferred.promise;
     }
 
     var h = host, p = port;
@@ -226,7 +229,6 @@ module.exports = {
       p = self.DEFAULT_PORT;
     }
 
-    var deferred = $q.defer();
     self.init(h, p).then(
       function() {
         self.pollingEnabled = true;
