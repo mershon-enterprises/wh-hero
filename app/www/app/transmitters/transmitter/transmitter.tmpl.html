@@ -1,7 +1,7 @@
 <ion-view view-title="{{transmitterCtrl.transmitter.name}}">
     <ion-content>
-        <div ng-class="{'transmitter-icon-connected':!transmitterCtrl.isConnected,
-                        'transmitter-icon-disconnected':transmitterCtrl.isConnected}"></div>
+        <div ng-class="{'transmitter-icon-connected':!transmitterCtrl.connected,
+                        'transmitter-icon-disconnected':transmitterCtrl.connected}"></div>
         <div class="table table-250">
 
             <!-- update with ng-repeat -->
