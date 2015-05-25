@@ -50,6 +50,13 @@ hero.service('TransmitterService', function() {
                 transmitters = [
                     { connected: true, name: "Transmitter 1", mac: "01-02-03-04-05-06-07-08", neighbors: [
                             {
+                                mac: "Gateway",
+                                signalStrength: {
+                                    from: -255,
+                                    to: -255
+                                }
+                            },
+                            {
                                 mac: "02-03-04-05-06-07-08-09",
                                 signalStrength: {
                                     from: -36,
@@ -97,7 +104,14 @@ hero.service('TransmitterService', function() {
                             }
                         ] },
                     { connected: true, name: "Transmitter 4", mac: "04-05-06-07-08-09-10-11", neighbors: [
-                        {
+                            {
+                                mac: "Gateway",
+                                signalStrength: {
+                                    from: -255,
+                                    to: -255
+                                }
+                            },
+                            {
                                 mac: "01-02-03-04-05-06-07-08",
                                 signalStrength: {
                                     from: -36,
@@ -150,7 +164,14 @@ hero.service('TransmitterService', function() {
                             }
                     ] },
                     { connected: true, name: "Transmitter 6", mac: "06-07-08-09-10-11-12-13", neighbors: [
-                        {
+                            {
+                                mac: "Gateway",
+                                signalStrength: {
+                                    from: -255,
+                                    to: -255
+                                }
+                            },
+                            {
                                 mac: "04-05-06-07-08-09-10-11",
                                 signalStrength: {
                                     from: -28,
