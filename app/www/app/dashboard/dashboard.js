@@ -14,13 +14,14 @@ angular.module('hero.dashboard', [
             });
     })
 
-    .controller('DashboardCtrl', function() {
+    .controller('DashboardCtrl', function($cordovaToast) {
         var dashboardCtrl = this;
 
         dashboardCtrl.lastUpdated = new Date();
-        dashboardCtrl.isConnected = true;
 
-        dashboardCtrl.connectivityMessage = "Connected";
+        // start out disconnected
+        dashboardCtrl.isConnected = false;
+        dashboardCtrl.connectivityMessage = "Disconnected";
 
         dashboardCtrl.toggleConnectivity = function() {
             if (dashboardCtrl.isConnected) {
@@ -36,6 +37,9 @@ angular.module('hero.dashboard', [
                             // error. inconceivable
                         }
                     );
+                } else {
+                    // dev mode
+                    disable();
                 }
             } else {
                 var enable = function() {
@@ -49,7 +53,7 @@ angular.module('hero.dashboard', [
                     window.parser.enablePolling().then(
                         enable,
                         function(errorMessage) {
-                            alert(errorMessage);
+                            $cordovaToast.show(errorMessage, 'long', 'center');
                         }
                     );
                 } else {
@@ -59,5 +63,10 @@ angular.module('hero.dashboard', [
 
             }
         };
+
+        // add an event hook for connectedToGateway
+        document.addEventListener('connectedToGateway', function() {
+            dashboardCtrl.toggleConnectivity();
+        });
     })
 ;
