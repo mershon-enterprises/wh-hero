@@ -40,7 +40,8 @@ angular.module('hero.mesh', [
             var i = 0;
             _.each(transmitters.slice(0), function(t) {
                 t.group = 1;
-                t.selected = false;
+                t.selected = (meshCtrl.selectedNode !== undefined &&
+                              t.mac == meshCtrl.selectedNode.mac);
                 t.id = i; // for the force graph links
                 nodeMap[t.mac] = t;
                 nodes.push(t);

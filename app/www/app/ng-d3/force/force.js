@@ -76,8 +76,14 @@ angular.module('ng-d3.force', [])
                 
                 function tick() {
                     node
-                        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-                
+                        .attr("transform", function(d) { return "translate(" +
+                            Math.max(8, Math.min(width - 8, d.x)) + "," +
+                            Math.max(8, Math.min(height - 8, d.y)) + ")";
+                        });
+
+                    svg.selectAll("circle")
+                        .style("fill", function(d) { return d.selected ? "#CC0000" : color(d.group); });
+
                     link.attr("x1", function(d) { return d.source.x; })
                         .attr("y1", function(d) { return d.source.y; })
                         .attr("x2", function(d) { return d.target.x; })
