@@ -40,6 +40,12 @@ module.exports = {
               // then get gateway device count
               function(deviceCount) {
                 self.deviceCount = deviceCount;
+
+                // fire the connectedToGateway event
+                var ev = document.createEvent('Events');
+                ev.initEvent('connectedToGateway', true, true);
+                document.dispatchEvent(ev);
+
                 deferred.resolve();
               },
               function(message) {
