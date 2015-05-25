@@ -5,10 +5,11 @@ var hero = angular.module('hero', [
     'hero.mesh',
     'hero.transmitters',
     'hero.transmitters.transmitter',
-    'hero.transmitters.transmitter.measurementHistory'
+    'hero.transmitters.transmitter.measurementHistory',
+    'ngCordova'
 ])
 
-.run(function($ionicPlatform, $q) {
+.run(function($ionicPlatform, $q, $cordovaToast) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -30,9 +31,13 @@ var hero = angular.module('hero', [
         // Make 'q' module available to Cordova plugins
         window.$q = $q;
 
-        // start parsing immediately
+        // try to start parsing immediately
         if (window.parser !== undefined) {
-            window.parser.enablePolling();
+            window.parser.enablePolling().catch(
+                function(errorMessage) {
+                    $cordovaToast.show(errorMessage, 'long', 'center');
+                }
+            );
         }
     });
 })

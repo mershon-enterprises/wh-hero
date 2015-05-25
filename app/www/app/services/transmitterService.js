@@ -213,14 +213,14 @@ hero.service('TransmitterService', function() {
 
 
         var fetchByMacAddress = function(macAddress) {
-            return _.reduce(
+            return _.find(
                 this.getAll(),
-                function(ignore, t) {
-                  if (t['macAddress'] == macAddress) {
+                function(t) {
+                  if (t['mac'] === macAddress) {
                     return {
-                        connected: t['status'] === 208,
+                        connected: t['connected'],
                         name: t['name'],
-                        mac: t['macAddress']
+                        mac: t['mac']
                     };
                   }
                 }

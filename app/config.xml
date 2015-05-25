@@ -18,6 +18,13 @@
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
+    <feature name="Toast">
+        <param name="id" value="nl.x-services.plugins.toast" />
+    </feature>
+    <feature name="WirelessHART Gateway">
+        <param name="id" value="mershon.enterprises.wirelesshart" />
+        <param name="installPath" value="../plugins/wireless-hart-gateway" />
+    </feature>
   <platform name="android">
     <splash src="resources/android/splash/drawable-land-ldpi-screen.png" density="land-ldpi"/>
     <splash src="resources/android/splash/drawable-land-mdpi-screen.png" density="land-mdpi"/>

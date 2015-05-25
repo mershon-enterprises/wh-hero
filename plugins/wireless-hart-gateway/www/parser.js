@@ -18,60 +18,60 @@ module.exports = {
     var deferred = window.$q.defer();
 
     // connect to the gateway
-    var firstFailure;
     window.hart.connect(host, port).then(
       function() {
-        return window.hart.login();
-      },
-      function(message) {
-        firstFailure = 'Failed to connect to the Gateway at ' + host;
-        console.log(firstFailure);
-        deferred.reject(firstFailure);
-      }
-    ).then(
-      // then get the gateway meta-data
-      function(loginResponse) {
-        return window.hart.getGateway();
-      },
-      function(message) {
-        if (firstFailure === undefined) {
-            firstFailure = 'Failed to login to Gateway at ' + host;
-        }
-        window.hart.disconnect(
-          function() {
-            console.log(firstFailure);
-            deferred.reject(firstFailure);
+        window.hart.login().then(
+          // then get the gateway meta-data
+          function(loginResponse) {
+            window.hart.getGateway().then(
+              // then get the gateway device count
+              function(gateway) {
+                self.gateway = gateway;
+                return window.hart.getGatewayDeviceCount(self.gateway);
+              },
+              function(message) {
+                window.hart.disconnect().then(
+                  function() {
+                    deferred.reject('Failed to get Gateway meta-data at ' + host);
+                  }
+                );
+              }
+            ).then(
+              // then get gateway device count
+              function(deviceCount) {
+                self.deviceCount = deviceCount;
+
+                // fire the connectedToGateway event
+                var ev = document.createEvent('Events');
+                ev.initEvent('connectedToGateway', true, true);
+                document.dispatchEvent(ev);
+
+                deferred.resolve();
+              },
+              function(message) {
+                window.hart.disconnect().then(
+                  function() {
+                    deferred.reject('Failed to get Gateway device count at ' + host);
+                  }
+                );
+              }
+            );
           },
-          function() {
-            // error. inconceivable
+          function(message) {
+            window.hart.disconnect().then(
+              function() {
+                deferred.reject('Failed to login to Gateway at ' + host);
+              }
+            );
           }
         );
-      }
-    ).then(
-      // then get the gateway device count
-      function(gateway) {
-        self.gateway = gateway;
-        return window.hart.getGatewayDeviceCount(self.gateway);
       },
       function(message) {
-        if (firstFailure === undefined) {
-            firstFailure = 'Failed to get Gateway meta-data at ' + host;
-        }
-        console.log(firstFailure);
-        deferred.reject(firstFailure);
-      }
-    ).then(
-      // then get gateway device count
-      function(deviceCount) {
-        self.deviceCount = deviceCount;
-        deferred.resolve();
-      },
-      function(message) {
-        if (firstFailure === undefined) {
-            firstFailure = 'Failed to get Gateway device count at ' + host;
-        }
-        console.log(firstFailure);
-        deferred.reject(firstFailure);
+        window.hart.disconnect().then(
+          function() {
+            deferred.reject('Failed to connect to the Gateway at ' + host);
+          }
+        );
       }
     );
 
@@ -216,8 +216,11 @@ module.exports = {
 
   enablePolling: function(host, port) {
     var self = this;
+    var deferred = $q.defer();
+
     if (self.pollingEnabled === true) {
-      return;
+      deferred.resolve();
+      return deferred.promise;
     }
 
     var h = host, p = port;
@@ -226,7 +229,6 @@ module.exports = {
       p = self.DEFAULT_PORT;
     }
 
-    var deferred = $q.defer();
     self.init(h, p).then(
       function() {
         self.pollingEnabled = true;
