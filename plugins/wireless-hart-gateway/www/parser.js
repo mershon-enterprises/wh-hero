@@ -42,9 +42,11 @@ module.exports = {
                 self.deviceCount = deviceCount;
 
                 // fire the connectedToGateway event
-                var ev = document.createEvent('Events');
-                ev.initEvent('connectedToGateway', true, true);
-                document.dispatchEvent(ev);
+                setTimeout(function() {
+                    var ev = document.createEvent('Events');
+                    ev.initEvent('connectedToGateway', true, true);
+                    document.dispatchEvent(ev);
+                }, 50);
 
                 deferred.resolve();
               },
