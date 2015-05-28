@@ -19,15 +19,22 @@
         <ion-content>
             <ion-list>
                 <ion-item nav-clear menu-close ui-sref="hero.dashboard">
+                    <i class="icon ion-home"></i>
                     Dashboard
                 </ion-item>
                 <ion-item nav-clear menu-close ui-sref="hero.transmitters">
+                    <i class="icon ion-wifi"></i>
                     Transmitters
                 </ion-item>
                 <ion-item nav-clear menu-close ui-sref="hero.mesh">
+                    <i class="icon ion-ios-flower"></i>
                     Mesh
                 </ion-item>
+                <ion-item class="item item-divider">
+                    Settings
+                </ion-item>
                 <ion-item nav-clear menu-close ng-click="menuCtrl.eraseData()">
+                    <i class="icon ion-trash-a"></i>
                     Erase Data
                 </ion-item>
             </ion-list>
