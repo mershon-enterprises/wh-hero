@@ -21,13 +21,13 @@ angular.module('hero.dashboard', [
 
         // start out disconnected
         dashboardCtrl.isConnected = false;
-        dashboardCtrl.connectivityMessage = "Disconnected";
+        dashboardCtrl.connectivityMessage = "Click to connect";
 
         dashboardCtrl.toggleConnectivity = function() {
             if (dashboardCtrl.isConnected) {
                 var disable = function() {
                     dashboardCtrl.isConnected = false;
-                    dashboardCtrl.connectivityMessage = "Disconnected";
+                    dashboardCtrl.connectivityMessage = "Click to connect";
                 }
 
                 if (window.parser !== undefined) {

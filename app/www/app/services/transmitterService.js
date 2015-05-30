@@ -22,7 +22,13 @@ hero.service('TransmitterService', function() {
                             neighbors = _.map(
                                 stats.neighbors,
                                 function(n) {
-                                    return n['macAddress'];
+                                    return {
+                                        mac: n['macAddress'],
+                                        signalStrength: {
+                                            from: n['rssiFrom'],
+                                            to: n['rssiTo']
+                                        }
+                                    };
                                 }
                             );
                         }
@@ -42,14 +48,183 @@ hero.service('TransmitterService', function() {
             {
                 // not in production -- return dummy data
                 transmitters = [
-                    { connected: true, name: "Transmitter 1", mac: "01-02-03-04-05-06-07-08", neighbors: ["02-03-04-05-06-07-08-09","03-04-05-06-07-08-09-10","04-05-06-07-08-09-10-11"] },
-                    { connected: true, name: "Transmitter 2", mac: "02-03-04-05-06-07-08-09", neighbors: ["Gateway","01-02-03-04-05-06-07-08","05-06-07-08-09-10-11-12"] },
-                    { connected: true, name: "Transmitter 3", mac: "03-04-05-06-07-08-09-10", neighbors: ["Gateway","01-02-03-04-05-06-07-08"] },
-                    { connected: true, name: "Transmitter 4", mac: "04-05-06-07-08-09-10-11", neighbors: ["Gateway","01-02-03-04-05-06-07-08","05-06-07-08-09-10-11-12","06-07-08-09-10-11-12-13"] },
-                    { connected: true, name: "Transmitter 5", mac: "05-06-07-08-09-10-11-12", neighbors: ["04-05-06-07-08-09-10-11","02-03-04-05-06-07-08-09","06-07-08-09-10-11-12-13","07-08-09-10-11-12-13-14"] },
-                    { connected: true, name: "Transmitter 6", mac: "06-07-08-09-10-11-12-13", neighbors: ["04-05-06-07-08-09-10-11","05-06-07-08-09-10-11-12","07-08-09-10-11-12-13-14"] },
-                    { connected: true, name: "Transmitter 7", mac: "07-08-09-10-11-12-13-14", neighbors: ["05-06-07-08-09-10-11-12","06-07-08-09-10-11-12-13","08-09-10-11-12-13-14-15"] },
-                    { connected: true, name: "Transmitter 8", mac: "08-09-10-11-12-13-14-15", neighbors: ["Gateway","07-08-09-10-11-12-13-14"] }
+                    { connected: true, name: "Transmitter 1", mac: "01-02-03-04-05-06-07-08", neighbors: [
+                            {
+                                mac: "Gateway",
+                                signalStrength: {
+                                    from: -255,
+                                    to: -255
+                                }
+                            },
+                            {
+                                mac: "02-03-04-05-06-07-08-09",
+                                signalStrength: {
+                                    from: -36,
+                                    to: -48
+                                }
+                            },
+                            {
+                                mac: "03-04-05-06-07-08-09-10",
+                                signalStrength: {
+                                    from: -42,
+                                    to: -50
+                                }
+                            },
+                            {
+                                mac: "04-05-06-07-08-09-10-11",
+                                signalStrength: {
+                                    from: -63,
+                                    to: -59
+                                }
+                            }
+                        ] },
+                    { connected: true, name: "Transmitter 2", mac: "02-03-04-05-06-07-08-09", neighbors: [
+                            {
+                                mac: "01-02-03-04-05-06-07-08",
+                                signalStrength: {
+                                    from: -32,
+                                    to: -49
+                                }
+                            },
+                            {
+                                mac: "05-06-07-08-09-10-11-12",
+                                signalStrength: {
+                                    from: -42,
+                                    to: -50
+                                }
+                            }
+                        ] },
+                    { connected: true, name: "Transmitter 3", mac: "03-04-05-06-07-08-09-10", neighbors: [
+                            {
+                                mac: "01-02-03-04-05-06-07-08",
+                                signalStrength: {
+                                    from: -46,
+                                    to: -49
+                                }
+                            }
+                        ] },
+                    { connected: true, name: "Transmitter 4", mac: "04-05-06-07-08-09-10-11", neighbors: [
+                            {
+                                mac: "Gateway",
+                                signalStrength: {
+                                    from: -255,
+                                    to: -255
+                                }
+                            },
+                            {
+                                mac: "01-02-03-04-05-06-07-08",
+                                signalStrength: {
+                                    from: -36,
+                                    to: -48
+                                }
+                            },
+                            {
+                                mac: "05-06-07-08-09-10-11-12",
+                                signalStrength: {
+                                    from: -42,
+                                    to: -50
+                                }
+                            },
+                            {
+                                mac: "06-07-08-09-10-11-12-13",
+                                signalStrength: {
+                                    from: -63,
+                                    to: -59
+                                }
+                            }
+                    ] },
+                    { connected: true, name: "Transmitter 5", mac: "05-06-07-08-09-10-11-12", neighbors: [
+                        {
+                                mac: "04-05-06-07-08-09-10-11",
+                                signalStrength: {
+                                    from: -21,
+                                    to: -31
+                                }
+                            },
+                            {
+                                mac: "02-03-04-05-06-07-08-09",
+                                signalStrength: {
+                                    from: -32,
+                                    to: -38
+                                }
+                            },
+                            {
+                                mac: "06-07-08-09-10-11-12-13",
+                                signalStrength: {
+                                    from: -58,
+                                    to: -54
+                                }
+                            },
+                            {
+                                mac: "07-08-09-10-11-12-13-14",
+                                signalStrength: {
+                                    from: -67,
+                                    to: -63
+                                }
+                            }
+                    ] },
+                    { connected: true, name: "Transmitter 6", mac: "06-07-08-09-10-11-12-13", neighbors: [
+                            {
+                                mac: "Gateway",
+                                signalStrength: {
+                                    from: -255,
+                                    to: -255
+                                }
+                            },
+                            {
+                                mac: "04-05-06-07-08-09-10-11",
+                                signalStrength: {
+                                    from: -28,
+                                    to: -31
+                                }
+                            },
+                            {
+                                mac: "05-06-07-08-09-10-11-12",
+                                signalStrength: {
+                                    from: -32,
+                                    to: -34
+                                }
+                            },
+                            {
+                                mac: "07-08-09-10-11-12-13-14",
+                                signalStrength: {
+                                    from: -38,
+                                    to: -34
+                                }
+                            }
+                    ] },
+                    { connected: true, name: "Transmitter 7", mac: "07-08-09-10-11-12-13-14", neighbors: [
+                        {
+                                mac: "05-06-07-08-09-10-11-12",
+                                signalStrength: {
+                                    from: -31,
+                                    to: -39
+                                }
+                            },
+                            {
+                                mac: "06-07-08-09-10-11-12-13",
+                                signalStrength: {
+                                    from: -42,
+                                    to: -54
+                                }
+                            },
+                            {
+                                mac: "08-09-10-11-12-13-14-15",
+                                signalStrength: {
+                                    from: -39,
+                                    to: -25
+                                }
+                            }
+                    ] },
+                    { connected: true, name: "Transmitter 8", mac: "08-09-10-11-12-13-14-15", neighbors: [
+                        {
+                                mac: "07-08-09-10-11-12-13-14",
+                                signalStrength: {
+                                    from: -32,
+                                    to: -42
+                                }
+                            }
+                    ] }
 
                 ];
             }
@@ -66,7 +241,8 @@ hero.service('TransmitterService', function() {
                     return {
                         connected: t['connected'],
                         name: t['name'],
-                        mac: t['mac']
+                        mac: t['mac'],
+                        neighbors: t['neighbors']
                     };
                   }
                 }

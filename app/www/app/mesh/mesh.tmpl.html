@@ -1,25 +1,48 @@
 <ion-view view-title="Mesh">
-    <ion-content scroll="false">
+    <ion-content>
         <d3-force data="meshCtrl.chartData"
                  style="margin:0 auto"></d3-force>
-                 
+
         <label class="item item-input item-select">
           <div class="input-label">
             Transmitter
           </div>
           <select
               ng-model="meshCtrl.selectedNode"
-              ng-options="node.name for node in meshCtrl.chartData.nodes"
+              ng-options="node.name for node in meshCtrl.transmitters"
               ng-change="meshCtrl.selectedNodeChanged()">
           </select>
         </label>
         <div class="list list-inset" ng-if="meshCtrl.selectedNode">
             <div class="item">
-                {{meshCtrl.selectedNode.name}} : [{{meshCtrl.selectedNode.macAddress}}] 
+                {{meshCtrl.selectedNode.name}} : [{{meshCtrl.selectedNode.mac}}]
             </div>
-            <div class="item">
-                <a ui-sref="hero.transmitter({macAddress:meshCtrl.selectedNode.macAddress})">View Detail</a>
+            <div class="item" ng-if="meshCtrl.selectedNode.mac !== 'Gateway'">
+                <a ui-sref="hero.transmitter({macAddress:meshCtrl.selectedNode.mac})">View Detail</a>
             </div>
+            <div class="row responsive-sm">
+                <div class="col" ng-repeat="neighbor in meshCtrl.selectedNode.neighbors">
+                    <div class="table table-250">
+                        <div class="table-row">
+                            <div class="table-cell-250">
+                                <a href="#" ng-model="meshCtrl.selectedNode" ng-click="meshCtrl.selectNode(neighbor.mac)">
+                                    {{neighbor.name}}
+                                </a>
+                            </div>
+                        </div>
+                        <!-- update with ng-repeat -->
+                        <div class="table-row" >
+                            <div class="table-cell-125">Signal To</div>
+                            <div class="table-cell-125">{{neighbor.signalStrength.to}} dB</div>
+                        </div>
+                        <div class="table-row" >
+                            <div class="table-cell-125">Signal From</div>
+                            <div class="table-cell-125">{{neighbor.signalStrength.from}} dB</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </ion-content>
 </ion-view>
