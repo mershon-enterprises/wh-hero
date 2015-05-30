@@ -1,6 +1,7 @@
 var hero = angular.module('hero', [
     'ionic',
     'hero.menu',
+    'hero.about',
     'hero.dashboard',
     'hero.mesh',
     'hero.transmitters',
