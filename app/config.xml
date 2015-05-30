@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.hydra151744" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>Wireless HART Hero</name>
+  <name>WH Hero</name>
   <description>
         An application to demonstrate WirelessHART mesh sensor data.
     </description>
