@@ -2,6 +2,7 @@ var hero = angular.module('hero', [
     'ionic',
     'hero.menu',
     'hero.about',
+    'hero.config',
     'hero.dashboard',
     'hero.mesh',
     'hero.transmitters',
@@ -25,16 +26,20 @@ var hero = angular.module('hero', [
             StatusBar.styleDefault();
         }
 
-        if (!window.tlantic.plugins.socket) {
-            alert('No object window.tlantic.plugins.socket!');
+        if (!window.tlantic) {
+            console.log('Unable to connect to Cordova plugins');
         }
 
         // Make 'q' module available to Cordova plugins
         window.$q = $q;
+        window.hostIP = [192, 168, 1, 10];
 
         // try to start parsing immediately
         if (window.parser !== undefined) {
-            window.parser.enablePolling().catch(
+            window.parser.enablePolling(
+                window.hostIP.join('.'),
+                5094
+            ).catch(
                 function(errorMessage) {
                     $cordovaToast.show(errorMessage, 'long', 'center');
                 }

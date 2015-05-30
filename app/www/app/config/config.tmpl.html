@@ -1,0 +1,49 @@
+<ion-view view-title="">
+    <ion-content>
+        <ion-list>
+            <label class="item item-input">
+                <div class="input-label">
+                    IP Address
+                </div>
+                <table class="config-input config-ip">
+                    <tr>
+                        <td>
+                            <input type="number"
+                            ng-model="configCtrl.hostIP[0]"
+                            ng-change="configCtrl.applyIP()">
+                        </td>
+                        <td>.</td>
+                        <td>
+                            <input type="number"
+                            ng-model="configCtrl.hostIP[1]"
+                            ng-change="configCtrl.applyIP()">
+                        </td>
+                        <td>.</td>
+                        <td>
+                            <input type="number"
+                            ng-model="configCtrl.hostIP[2]"
+                            ng-change="configCtrl.applyIP()">
+                        </td>
+                        <td>.</td>
+                        <td>
+                            <input type="number"
+                            ng-model="configCtrl.hostIP[3]"
+                            ng-change="configCtrl.applyIP()">
+                        </td>
+                    </tr>
+                </table>
+            </label>
+            <label class="item item-input">
+                <div class="input-label">
+                    Port
+                </div>
+                <div class="config-input input-label">
+                    5094
+                </div>
+            </label>
+            <ion-toggle ng-model="configCtrl.demoMode"
+                ng-change="configCtrl.toggleDemoMode()"
+                toggle-class="toggle-calm">Demo Mode</ion-toggle>
+        </ion-list>
+    </ion-content>
+</ion-view>

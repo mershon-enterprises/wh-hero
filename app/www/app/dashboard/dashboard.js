@@ -50,7 +50,10 @@ angular.module('hero.dashboard', [
 
                 if (window.parser !== undefined) {
                     // production
-                    window.parser.enablePolling().then(
+                    window.parser.enablePolling(
+                        window.hostIP.join('.'),
+                        5094
+                    ).then(
                         enable,
                         function(errorMessage) {
                             $cordovaToast.show(errorMessage, 'long', 'center');
@@ -66,7 +69,9 @@ angular.module('hero.dashboard', [
 
         // add an event hook for connectedToGateway
         document.addEventListener('connectedToGateway', function() {
-            dashboardCtrl.toggleConnectivity();
+            if (!dashboardCtrl.isConnected) {
+                dashboardCtrl.toggleConnectivity();
+            }
         });
     })
 ;
