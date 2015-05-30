@@ -18,15 +18,29 @@ angular.module('hero.mesh', [
 
         var meshCtrl = this;
 
-        var transmitters = TransmitterService.getAll().concat(
-            // add the gateway as a node for things to connect to
+        var transmitters = TransmitterService.getAll();
+        // add the gateway as a node for things to connect to
+        transmitters.unshift(
             { connected: true,
                name:      'Gateway',
                mac:       'Gateway',
-               neighbors: []
+               neighbors: _.filter(_.map(
+                   transmitters,
+                   function(t) {
+                       var isGatewayNeighbor = _.any(
+                           t.neighbors,
+                           function(tn) {
+                               return tn.mac === 'Gateway';
+                           }
+                       );
+                       if (isGatewayNeighbor) {
+                           return t;
+                       }
+                   }
+               ), function(xn) { return xn !== undefined; })
             }
         );
-        
+
         function populateNodes()
         {
             var nodeMap = {};        // a lookup object -- key: mac, value: node object
@@ -48,15 +62,15 @@ angular.module('hero.mesh', [
                 allNodes.push(t);
                 i++;
             }, this);
-        
+
             // filter nodes if necessary
             if (meshCtrl.selectedNode != null)
             {
                 // loop throuh all the nodes
                 _.each(allNodes, function(t) {
-                    // assum we're going to remove the node unless the node is a neighbor of the selected node
+                    // assume we're going to remove the node unless the node is a neighbor of the selected node
                     var shouldRemoveTransmitter = true;
-                    
+
                     // check to see if the current node is a neighbor of the selected node by checking all the neighbors
                     _.each(meshCtrl.selectedNode.neighbors, function(n) {
                         if (t.mac == n.mac || t.mac == meshCtrl.selectedNode.mac)
@@ -125,14 +139,25 @@ angular.module('hero.mesh', [
         var selectedNodeChanged = function()
         {
             populateNodes();
-        }        
-        
+        }
+
+        var selectNode = function(mac)
+        {
+            if (mac !== 'Gateway') {
+                meshCtrl.selectedNode = TransmitterService.fetchByMacAddress(mac);
+            } else {
+                meshCtrl.selectedNode = transmitters[0];
+            }
+            meshCtrl.selectedNodeChanged();
+        }
+
         var options = {
             height: 400,
             width: 400
         };
 
         meshCtrl.selectedNodeChanged = selectedNodeChanged;
+        meshCtrl.selectNode = selectNode;
         meshCtrl.chartOptions = options;
 
     });

@@ -241,7 +241,8 @@ hero.service('TransmitterService', function() {
                     return {
                         connected: t['connected'],
                         name: t['name'],
-                        mac: t['mac']
+                        mac: t['mac'],
+                        neighbors: t['neighbors']
                     };
                   }
                 }
