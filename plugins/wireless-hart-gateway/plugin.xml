@@ -10,7 +10,7 @@
   </engines>
 
   <dependency id="com.tlantic.plugins.socket"
-      url="https://github.com/mershon-enterprises/cdv-socket-plugin" commit="4f0254eda34346090a1a8b50977dbe0d16e1acf9" />
+      url="https://github.com/mershon-enterprises/cdv-socket-plugin" commit="1706d5919caab4cbb77e212ac5f0fe93e11b50ce" />
 
   <asset src="www/hart.js" target="js/hart.js"/>
   <asset src="www/parser.js" target="js/parser.js"/>
