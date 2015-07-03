@@ -20,26 +20,37 @@ angular.module('hero.mesh', [
 
         var transmitters = TransmitterService.getAll();
         // add the gateway as a node for things to connect to
-        transmitters.unshift(
-            { connected: true,
-               name:      'Gateway',
-               mac:       'Gateway',
-               neighbors: _.filter(_.map(
-                   transmitters,
-                   function(t) {
-                       var isGatewayNeighbor = _.any(
-                           t.neighbors,
-                           function(tn) {
-                               return tn.mac === 'Gateway';
-                           }
-                       );
-                       if (isGatewayNeighbor) {
-                           return t;
+        var gatewayNode = {
+            connected: true,
+            name:      'Gateway',
+            mac:       'Gateway',
+            neighbors: []
+        };
+        gatewayNode.neighbors = _.filter(
+            _.map(
+               transmitters,
+               function(t) {
+                   var gatewayNeighbor = _.find(
+                       t.neighbors,
+                       function(tn) {
+                           return tn.mac === 'Gateway';
                        }
+                   );
+                   if (gatewayNeighbor) {
+                       return {
+                           mac: t.mac,
+                           signalStrength: {
+                               // switch the to/from
+                               from: gatewayNeighbor.signalStrength['to'],
+                               to: gatewayNeighbor.signalStrength['from']
+                           }
+                       };
                    }
-               ), function(xn) { return xn !== undefined; })
-            }
+               }
+            ),
+            function(xn) { return xn !== undefined; }
         );
+        transmitters.unshift(gatewayNode);
 
         function populateNodes()
         {
